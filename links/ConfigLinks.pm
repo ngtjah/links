@@ -5,11 +5,11 @@ package ConfigLinks;
 use strict;
 
 # Main Paths
-our $path                    = "/home/user/links";       #Local
-our $imgpath                 = "/home/user/links_img";   #Local
-our $imgfolder               = "imgs";                  #Local and s3
-our $image_magick_tmp_path   = "/home/user/tmp";         #Temp folder for thumbnail creation (up to 1.5G)
-our $thumbfolder             = "thumbs";                #Local and s3
+our $path                    = "/home/user/links";           #Local
+our $imgpath                 = "/home/user/links_img";       #Local
+our $image_magick_tmp_path   = "/home/user/links_img/tmp";   #Temp folder for thumbnail creation (up to 1.5G)
+our $imgfolder               = "imgs";                       #Local and s3
+our $thumbfolder             = "thumbs";                     #Local and s3
 our $default_logfile         = "/home/user/links/IrcLog.Window_1";
 our $nickfile                = "/home/user/links/nickalts.data";
 
