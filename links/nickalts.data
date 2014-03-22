@@ -1,0 +1,3 @@
+# Nick alternate conversation file
+# Format: MainNick:Alternate1:Alternate2:etc
+default:default1:default2

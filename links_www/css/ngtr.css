@@ -1,0 +1,180 @@
+body {
+  font-size: 14px;
+  line-height: 1.428571429;
+  color: #333333;
+  background-color: #ffffff;
+}
+
+.container {
+     padding-right: 4px; /*15px in bootstrap.css*/
+     padding-left: 4px;  /*idem*/
+     margin-right: auto;
+     margin-left: auto;
+}
+
+
+.my-fluid-container {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Nickname column */
+.nick {
+    vertical-align: bottom !important;
+    text-align: right;
+}
+
+.table-condensed > thead > tr > th,
+.table-condensed > tbody > tr > th,
+.table-condensed > tfoot > tr > th,
+.table-condensed > thead > tr > td,
+.table-condensed > tbody > tr > td,
+.table-condensed > tfoot > tr > td {
+  padding: 3px;
+}
+
+
+.post-title {
+    position: absolute;
+    top: -3px;
+    //max-width: 200px;
+    left: 5px;
+    right: 5px;
+    z-index: 2;
+    color: #cc181e;
+    background-color: black;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    //font-family: sans-serif;
+    font-size: 11px;
+    //text-transform: uppercase;
+    
+}
+.post-thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+.post-title-thumbs {
+    position: absolute;
+    top: 0;
+    max-width: 180px;
+    left: 0;
+    z-index: 2;
+    color: #cc181e;
+    background-color: black;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-family: sans-serif;
+    font-size: 10px;
+    #text-transform: uppercase;
+}
+
+.youtube-ngt {
+    height: 170px;
+}
+
+.image-ngt {
+#    height: 150px;
+}
+
+
+.modal {
+    overflow: auto;
+    color: #333;
+}
+
+/* set a max-width for horizontal fluid layout and make it centered */
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1600px; /* or 950px */
+
+} 
+
+/* Set the Visited Link Color */
+.container-main  a:visited{color:#41637A;}
+
+/* Gallery */
+.thumb {
+  display: inline-block;
+  position: relative;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 2px;
+  padding-bottom: 1px;
+
+  margin-right: 2px;
+  margin-bottom: 2px; 
+
+  /* margin-left: auto;
+  margin-right: auto;  */
+
+  vertical-align: bottom;
+
+}
+
+/* info txt caption */
+.caption {
+
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 1px;
+
+  margin-top: 3px;
+
+  border:2px solid #dddddd;
+  border-collapse:collapse;
+  border-radius: 4px;
+
+}
+
+
+/* Setting the height */
+@media screen and (min-width: 768px) {
+  .blueimp-gallery .modal-dialog {
+    right: auto;
+    left: auto;
+        width: auto;
+    max-width: 900px;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+.blueimp-gallery .modal-body {
+	position: relative;
+	text-align: center;
+	padding: 0 0 56.25% 0;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+
+/* Lightbox Description */
+.blueimp-gallery > .description {
+  position: absolute;
+  top: 30px;
+  left: 15px;
+  color: #fff;
+  display: none;
+}
+
+.blueimp-gallery-controls > .description {
+  display: block;
+}
+
+/* Center the gallery */
+.links {
+   text-align: center;
+}
+
+
