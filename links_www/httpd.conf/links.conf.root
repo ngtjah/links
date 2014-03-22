@@ -1,0 +1,22 @@
+#This configuration places links in the root of your webpage
+
+<VirtualHost *:80>
+
+  ServerName my.domain.com
+  DocumentRoot /home/*user*/links_www
+
+  Alias /links_img /home/*user*/links_img
+
+  <Directory "/home/*user*/links_www">
+    Options All
+    AllowOverride All
+    Require all granted
+  </Directory>
+
+  <Directory "/home/*user*/links_img">
+    Options -indexes
+    AllowOverride All
+    Require all granted
+  </Directory>
+
+</VirtualHost>
