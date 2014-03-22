@@ -1,7 +1,7 @@
 <?php
 
 /* Enable Thumbs Page */
-$thumbsEnable = 1;
+$thumbsEnable = 0;
 
 /* Enable Link-up Page (twitter and pocket) */
 $LinkupEnable = 0;
