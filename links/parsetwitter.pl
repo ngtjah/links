@@ -27,7 +27,9 @@
 use strict;
 use warnings;
 
-use lib '/home/jah/links';
+use File::Basename;
+use lib dirname (__FILE__);
+
 #Load the Config File
 use ConfigLinks;
 
@@ -53,9 +55,9 @@ our $drh;
 our $entries   = 0;      # num entries found
 our @nicks;              # array of nicknames (: seperated)
 our @alternate_nicks;    # array of alt. nicknames
-our $MAXtweetid;
-our $twitter_account;
 
+
+my $MAXtweetid;
 
 #Twitter lol
 my $nt = Net::Twitter->new(
@@ -136,13 +138,12 @@ sub parse_twitter {
 
     if (  $MAXtweetid > 0 ) {
 
-	#Use Net::Twitter to get the mentions
 	eval { $mentions = $nt->mentions({since_id => $MAXtweetid});  }; # this might die!
 
     } else {
-
-	#Use Net::Twitter to get the mentions
-	eval { $mentions = $nt->mentions({count => 2});  }; # this might die!
+	
+	#Max to retrieve the first time
+	eval { $mentions = $nt->mentions({count => 50});  }; # this might die!
 
     }
     
@@ -180,7 +181,7 @@ sub parse_twitter {
 
 			#Process the line if it has a url AND it's not our own site AND its not a retweet AND this twitter ID gt our MAX twitter ID 
 			if ( $mention->{text} =~ /(http(s)?:\/\/|www\.|\.com)/i && $mention->{text} !~ /$myURL_meta/i 
-			                                 && $mention->{text} !~ /RT\ \@$twitter_account/i && $mention->{id} > $MAXtweetid ) {
+			                                 && $mention->{text} !~ /RT\ \@$ConfigLinks::twitter_account/i && $mention->{id} > $MAXtweetid ) {
 
 			    my $Twitter = new Links::Twitter(appid=>$mention->{id},created_at=>$mention->{created_at},body=>$mention->{text},announcer=>$mention->{user}{screen_name});
 
@@ -246,7 +247,7 @@ sub parse_twitter {
 
 				    }
 
-                                    if ($ConfigLinks::twitter_enable == 1) {
+                                    if ($ConfigLinks::twitter_enable_push == 1) {
 
                                         $Twitter->twitter_update_site;
 

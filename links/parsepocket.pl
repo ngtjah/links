@@ -26,7 +26,9 @@
 use strict;
 use warnings;
 
-use lib '/home/jah/links';
+use File::Basename;
+use lib dirname (__FILE__);
+
 #Load the Config File
 use ConfigLinks;
 
@@ -126,7 +128,7 @@ sub parse_pocket {
     
         if ( $MAXpocketdate == 0 ) {
     
-	    $lite_res = $lite->retrieve( {state => 'all'} );
+	    $lite_res = $lite->retrieve( {state => 'all', count => 10} );
     
         } else {
     	
@@ -212,7 +214,7 @@ sub parse_pocket {
 
 			}
 
-			if ($ConfigLinks::twitter_enable == 1) {
+			if ($ConfigLinks::twitter_enable_push == 1) {
 
 			    $Pocket->twitter_update_site;
 

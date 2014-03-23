@@ -45,8 +45,6 @@ sub pre_parse_irc {
 
     $self->{'body'} = join( " ", @segments );
 
-    #Remove Carriage Returns and newlines
-    $self->{'body'} =~ s/(\r|\n)//g;
     
     #Strip anonym.to so we can get the title
     $self->{'body'} =~ s/http:\/\/anonym\.to\/\?//i;
@@ -67,13 +65,16 @@ sub extract_url {
 
     #Extract the first URL
     if ( $self->{'body'} =~ / / ) {
+
 	my @www_segments_spaces = split( / /, $self->{'body'} );
         my @www_segments_grep =
            grep( /(http(s)?:\/\/|www\.|\.com)/i, @www_segments_spaces );
 	   $www_url = $www_segments_grep[0];
 
     } else {
+
 	$www_url = $self->{'body'};
+
     }
 
     #Add the http if it isn't there
@@ -352,7 +353,7 @@ sub get_local_mimetype {
 
 sub create_thumbnail {
 
-    use Image::Magick;
+    require Image::Magick;
 
     $self = shift;
 
@@ -441,7 +442,7 @@ sub create_thumbnail {
 
 sub move_thumbnail_to_s3_bucket {
 
-    use Net::Amazon::S3;
+    require Net::Amazon::S3;
 
     $self = shift;
 
@@ -548,11 +549,12 @@ sub image_download_failed {
 sub get_title {
 
     use LWP::UserAgent;
+    use Encode;
 
     $self = shift;
 
     my $ua = new LWP::UserAgent;
-       $ua->timeout(15);
+       $ua->timeout(60);
 
     #Go GET the webpage
     my $res = $ua->get( $self->{'www_url'} );
@@ -562,8 +564,19 @@ sub get_title {
 
 	#If the title is there, set it.
 	if ( $res->header('Title') ) {
+
+
+	    my $utf8flag = Encode::is_utf8( $res->header('Title') );
+
+	    if ( $utf8flag == 1 ) {
+	    	
+	       $self->{'title'} = Encode::encode('UTF-8', $res->header('Title'));
+	    	
+	    } else {
        
-	    $self->{'title'} = $res->header('Title');
+	       $self->{'title'} = $res->header('Title');
+
+	    }
 	    
 	    print "Title: " . $self->{'title'} . "\n" if $main::debug;
 
@@ -724,9 +737,9 @@ sub bot_announce_site {
 
 sub twitter_update_site {
 
-    use WWW::Shorten::Bitly;
-    use Net::Twitter;
-    use Net::Twitter::OAuth;
+    require WWW::Shorten::Bitly;
+    require Net::Twitter;
+    require Net::Twitter::OAuth;
     Net::Twitter -> import if Net::Twitter -> can ("import");
     Net::Twitter::OAuth -> import if Net::Twitter::OAuth -> can ("import");
 
@@ -798,63 +811,111 @@ sub twitter_update_site {
 
         }
     
-    
-        my $sitelen = length($self->{'body'});
         my $titlelen = 0;
-        if($title) {$titlelen = length($self->{'title'})};
-        my $totallen = $sitelen + $titlelen;
-        my $site_bitly;
-        my $tweetres;
-        my $bitly = 0;
-        my $site_url;
-        
-        if($self->{'www_url'}) {
-            $site_url = $self->{'www_url'};
+        my $urllen   = 0;
+    
+        $urllen = length($self->{'www_url'});
+
+        if($self->{'title'}) { $titlelen = length($self->{'title'}) };
+
+        my $totallen = $urllen + $titlelen;
+
+        # If the total length of the tweet is greater than the max tweet size (140) and the url is actually longer than a normal bitly url.
+	# Bitly it
+        if ( $totallen > 140 && $urllen > 14 ) {
+
+            $self->{'tweet_bitly'} = WWW::Shorten::Bitly::makeashorterlink($self->{'www_url'}, $ConfigLinks::bitly_account, $ConfigLinks::bitly_api_key); 
+
+	    print "Going to use the bitly URL to tweet this one: $self->{'tweet_bitly'}  \n";
+
+
+        }
+
+        #Get the final lengths to see if the URL and the title together are still too long
+        if($self->{'title'}) {
+
+            if($self->{'bitly'}) {
+
+                $self->{'tweet_len'}    = length($self->{'title'} . " " . $self->{'tweet_bitly'});
+
+            } else {
+
+                $self->{'tweet_len'}    = length($self->{'title'} . " " . $self->{'www_url'});
+
+            }
+
         } else {
-            $site_url = $self->{'body'};
+
+            if ($self->{'bitly'}) {
+
+                $self->{'tweet_len'}    = length($self->{'tweet_bitly'});
+
+            } else {
+
+                $self->{'tweet_len'}    = length($self->{'www_url'});
+
+            }
+
+        }
+ 
+
+	my $newtitle_length;
+
+	# If they are still too long lets chop the end off the title
+	if ( $self->{'tweet_len'} > 140 ) {
+
+	    my $spaceneeded = ( $self->{'tweet_len'} - 140 );
+
+	    $newtitle_length = $titlelen - $spaceneeded;
+
+	    $self->{'tweet_title'} = substr($self->{'title'},0,$newtitle_length);
+
+	    print "Tweet title cut to fit twitter 140 limit: $self->{'tweet_title'}  \n";
+
+	} else {
+
+	    $self->{'tweet_title'} = $self->{'title'};
+
+	}
+
+
+        #Setup the tweet text
+        if($self->{'tweet_title'}) {
+
+            if($self->{'bitly'}) {
+
+                $self->{'tweet_len'}    = length($self->{'tweet_title'} . " " . $self->{'tweet_bitly'});
+                $self->{'tweet'}        = $self->{'tweet_title'} . " " . $self->{'tweet_bitly'};
+
+            } else {
+
+                $self->{'tweet_len'}    = length($self->{'tweet_title'} . " " . $self->{'www_url'});
+                $self->{'tweet'}        = $self->{'tweet_title'} . " " . $self->{'www_url'};
+
+            }
+
+        } else {
+
+            if ($self->{'bitly'}) {
+
+                $self->{'tweet'}    = $self->{'tweet_bitly'};
+
+            } else {
+
+                $self->{'tweet'}    = $self->{'www_url'};
+
+            }
+
         }
         
-        if ($totallen >= 140) {
-            $bitly = 1;
-            $site_bitly = makeashorterlink($site_url, $ConfigLinks::bitly_account, $ConfigLinks::bitly_api_key); 
-            #print "shorter 1 titlelen: $titlelen sitelen: $sitelen";
-        } elsif ( $sitelen > 140 ) {
-            $bitly = 1;
-            $site_bitly = makeashorterlink($site_url, $ConfigLinks::bitly_account, $ConfigLinks::bitly_api_key);
-            #print "shorter 2";
-        } 
         
-        #Need to add another check here if the title + the bitly are over 140 substring down the title to make it all fit.		
-        #if (length(site_bitly) + $titlelen >= 140)
-        
-        eval{
-        
-            # Tweet the Status
-            if($self->{'title'}) {
-    
-                if($bitly == 1) {
-    
-            	$tweetres    = $nt->update({ status => "$self->{'title'} $site_bitly" });
-    
-                } else {
-    
-            	$tweetres    = $nt->update({ status => "$self->{'title'} $self->{'body'}" });
-    
-                }
-    
-            } else {
-        
-    	    if ($bitly == 1) {
-    
-            	$tweetres    = $nt->update({ status => "$site_bitly" });
-    
-                } else {
-    
-            	$tweetres    = $nt->update({ status => "$self->{'body'}" });
-
-                }
-            }
+        print "Tweeting: $self->{'tweet'}\n";
             
+        eval{
+
+    	    # Tweet it
+    	    $nt->update({ status => $self->{'tweet'} });
+
         };
         
         if ( my $err = $@ ) {
@@ -873,10 +934,6 @@ sub twitter_update_site {
 
 
 }
-
-
-
-
 
 
 

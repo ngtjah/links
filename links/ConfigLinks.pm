@@ -22,7 +22,7 @@ our $user     = "user";
 our $password = "password";
 
 # Enable/Disable Image Download. (logs, twitter, and pocket)
-our $img_download_enable = "1";
+our $img_download_enable = "0";
 
 # My URL
 # Ignore links from this domain or URL.
@@ -34,11 +34,11 @@ our $bot_enable = "0";
 # Eggdrop Bot TELNET Login (use only if the bot is running locally)
 our $botUsername = "";
 our $botPassword = "";
-our $botHostname = "";
-our $botTcpPort  = "";
+our $botHostname = "localhost";
+our $botTcpPort  = "5555";
 
-# Enable/Disable Posting To Twitter (logs, twitter, and pocket)
-our $twitter_enable = "0";
+# Enable/Disable Posting To Twitter from: (logs, twitter, and pocket)
+our $twitter_enable_push = "0";
 
 # Keep these Domains or URLs a secret and DO NOT EVER tweet them. 
 # blank them out for none. (logs, twitter, and pocket)

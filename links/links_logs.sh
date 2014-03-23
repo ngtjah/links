@@ -1,14 +1,19 @@
 #!/bin/bash
 
-# log rotation script
-ROOT=/home/jah/links
+# Set these
+ROOT=/home/user/jah/links
+LOGPATH=/home/user/eggdrop/mirclogs
+LOGFILE="#channel.log"
+
+# Shouldn't have to set these
 PARSELOG=$ROOT/parselogs.pl
-LOGFILE="#lanfoolz.log"
-LOGPATH=/home/jah/.eggdrop/mirclogs
+VAR_LOG=$ROOT/logs/links_logs.log
 OLDLOGS=oldlogs/
+
+# Dont set these
 PDIR=${0%`basename $0`}
 LCK_FILE=$ROOT/`basename $0`.lck
-VAR_LOG=$ROOT/logs/links_logs.log
+
 
 
 if [ -f "${LCK_FILE}" ]; then

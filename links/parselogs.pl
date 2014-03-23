@@ -26,8 +26,9 @@
 use strict;
 use warnings;
 
+use File::Basename;
+use lib dirname (__FILE__);
 
-use lib '/home/jah/links';
 #Config File
 use ConfigLinks;
 
@@ -44,17 +45,21 @@ use ConfigLinks;
 #use threads::shared;
 #use HTTP::Date qw(:DEFAULT parse_date);
 #use charnames ':full';
-#binmode(STDOUT, ":utf8");
 
 
 
 #Used in Links.pm
-#use WWW::Shorten::Bitly;
 #use File::LibMagic;
 #use URI::Escape;
 #use LWP::UserAgent;
-#use Image::Magick;
 #use MIME::Types qw(by_suffix by_mediatype);
+#use Encode;
+
+#require Net::Amazon::S3;
+#require Net::Telnet;
+#require Net::Twitter;
+#require Net::Twitter::OAuth;
+#require WWW::Shorten::Bitly;
 
 
 #Keep Here
@@ -92,6 +97,8 @@ sub startup {
 	}
 
 	open( LOG, $logfile ) or die "$0: Can't open $logfile for reading: $!\n";
+	binmode(LOG, ":utf8");
+
 
 	my $dsn = "DBI:$ConfigLinks::driver:database=$ConfigLinks::database;host=$ConfigLinks::hostname;port=$ConfigLinks::port";
 	$dbh = DBI->connect( $dsn, $ConfigLinks::user, $ConfigLinks::password ) || die("Cannot connect to database\n");
@@ -133,110 +140,118 @@ sub parse_log {
 
 	while ( $parseline = <LOG> ) {
 
-		my @segments = split( / /, $parseline );
+            #Remove Carriage Returns and newlines
+	    $parseline =~ s/(\r|\n)//g;
 
-		# check for nickname at beginning of line AND check for a URL but not a URL to ourself ($myURL_meta)
-		if ( $segments[1] =~ /\A<[_0-9a-zA-Z]*/ && ( $parseline =~ /(http(s)?:\/\/|www\.|\.com)/i && $parseline !~ /$myURL_meta/i )) {
+            my @segments = split( / /, $parseline );
 
-			chomp($parseline);
-			
-			if ($parseline) { 
-			
-			    my $Link = new Links(parseline=>$parseline);
+		# Make sure we have a line that has at least 1 space
+	if ( scalar(@segments) > 1 ) {
 
-			    $Link->pre_parse_irc;
+    		    # check for nickname at beginning of line AND check for a URL but not a URL to ourself ($myURL_meta)
+    		    if ( $segments[1] =~ /\A<[_0-9a-zA-Z]*/ && ( $parseline =~ /(http(s)?:\/\/|www\.|\.com)/i && $parseline !~ /$myURL_meta/i )) {
+    		    
+    		    	chomp($parseline);
+    		    	
+    		    	if ($parseline) { 
+    		    	
+    		    	    my $Link = new Links(parseline=>$parseline);
+    		    
+    		    	    $Link->pre_parse_irc;
+    		    
+    		    	    $Link->extract_url;
+    		    	
+    		    	    $Link->dupe_check;
+    		    
+    		    	    #If NOT a DUPE
+    		    	    if ( $Link->{'isdupe'} == 0 ) {
+    		    
+    		    		print "not dupe\n";
+    		    
+    		    		# If the inital mimetype could be retrieved successfully
+    		    		if ( $Link->get_remote_server_mimetype ) {
+    		    
+    		    		    #If it looks like it might be an image AND image download is enabled, lets try to grab it
+    		    		    if ( ( $Link->{'www_url'} =~ /.*\.(jpg|jpeg|png|gif).*/i || $Link->{'mimetype'} =~ /image.*/i ) && $ConfigLinks::img_download_enable == 1 ) {
+    		    		    
+    		    		        $Link->create_img_filename;
+    		    		    
+    		    		        if ( $Link->download_image ) {
+    		    
+    		    			    $Link->get_local_mimetype;
+    		    
+    		    			    if ( ! $Link->create_thumbnail ) {
+    		    
+    		    			        #Send the image and thumbnail to S3 Bucket
+    		    			        if ($ConfigLinks::s3_enable == 1) {
+    		    			        
+    		    			        	$Link->move_thumbnail_to_s3_bucket;
+    		    			        
+    		    			        } # If S3 Enabled
+    		    
+    		    			    } else { # Else create_thumbnail failed
+    		    
+    		    				$Link->thumbnail_failed;
+    		    
+    		    			    } # If create thumbnail was a success
+    		    		    
+    		    		        } else { # Else download image failed
+    		    
+    		    			    $Link->image_download_failed;
+    		    
+    		    			} # If download image was a success
+    		    		    
+    		    		    } #If it looks like it might be an image lets try to grab it
+    		    
+    		    		    # If it doesn't look like an image or archive or audio or video. OR if it was a failed image conversion.
+    		    		    if ( ( $Link->{'www_url'} !~ /.*\.(jpg|jpeg|png|gif).*/i && $Link->{'www_url'} !~ /.*\.(iso|rar|mp3|avi|mpg|mpeg|zip)/i && $Link->{'mimetype'} !~ /image.*/i 
+    		    			   &&  $Link->{'mimetype'} !~ /(video|application|audio).*/i  ) || ( $Link->{'failed_to_convert_img'} ) ) {
+    		    
+    		    			$Link->get_title;
+    		    
+    		    		    } 
+    		    
+    		    		    $Link->db_insert_site;
+    		    
+    		    		    if ($ConfigLinks::twitter_enable_push == 1) {
+    		    
+    		    			$Link->twitter_update_site;
+    		    
+    		    		    }
+    		    
+    		    		    
+    		    		    print "Announcer : $Link->{'announcer'}   URL : $Link->{'www_url'}\n\n" if $debug;
+    		    		    
+    		    		} else { # If the initial mimetype download could NOT be retrieved successfully
+    		    
+    		    		    print "This URL: $Link->{'www_url'} doesn't really exist!! Return Code: $Link->{'mimetype_returncode'}\n\n";
+    		    
+    		    		} # If the initial mimetype could be retrieved successfully
+    		    
+    		    	    } else { #IS a DUPE
+    		    
+    		    		$Link->db_bump_site;
+    		    
+    		    		if ( $ConfigLinks::bot_enable == 1 ) {
+    		    		    
+    		    		    $Link->bot_bump_site;
+    		    		
+    		    		}
+    		    
+    		    	    }  #If NOT a DUPE
+    		    	                  
+    		    	    use Data::Dumper;
+    		    	    print Dumper $Link;
+    		    	
+    		    	}    #if $parseline
+    		    
+    		    }  elsif (  $parseline =~ /$myURL_meta/i ) { # this is our URL
+    		    
+    		        print "Didn't parse this line because it matched $ConfigLinks::my_url -> $parseline\n" if $debug;
+    		    
+    		    }  #if segments and parseline
 
-			    $Link->extract_url;
-			
-			    $Link->dupe_check;
-
-			    #If NOT a DUPE
-			    if ( $Link->{'isdupe'} == 0 ) {
-
-				print "not dupe\n";
-
-				# If the inital mimetype could be retrieved successfully
-				if ( $Link->get_remote_server_mimetype ) {
-
-				    #If it looks like it might be an image AND image download is enabled, lets try to grab it
-				    if ( ( $Link->{'www_url'} =~ /.*\.(jpg|jpeg|png|gif).*/i || $Link->{'mimetype'} =~ /image.*/i ) && $ConfigLinks::img_download_enable == 1 ) {
-				    
-				        $Link->create_img_filename;
-				    
-				        if ( $Link->download_image ) {
-
-					    $Link->get_local_mimetype;
-
-					    if ( ! $Link->create_thumbnail ) {
-
-					        #Send the image and thumbnail to S3 Bucket
-					        if ($ConfigLinks::s3_enable == 1) {
-					        
-					        	$Link->move_thumbnail_to_s3_bucket;
-					        
-					        } # If S3 Enabled
-
-					    } else { # Else create_thumbnail failed
-
-						$Link->thumbnail_failed;
-
-					    } # If create thumbnail was a success
-				    
-				        } else { # Else download image failed
-
-					    $Link->image_download_failed;
-
-					} # If download image was a success
-				    
-				    } #If it looks like it might be an image lets try to grab it
-
-				    # If it doesn't look like an image or archive or audio or video. OR if it was a failed image conversion.
-				    if ( ( $Link->{'www_url'} !~ /.*\.(jpg|jpeg|png|gif).*/i && $Link->{'www_url'} !~ /.*\.(iso|rar|mp3|avi|mpg|mpeg|zip)/i && $Link->{'mimetype'} !~ /image.*/i 
-					   &&  $Link->{'mimetype'} !~ /(video|application|audio).*/i  ) || ( $Link->{'failed_to_convert_img'} ) ) {
-
-					$Link->get_title;
-
-				    } 
-
-				    $Link->db_insert_site;
-
-				    if ($ConfigLinks::twitter_enable == 1) {
-
-					$Link->twitter_update_site;
-
-				    }
-
-				    
-				    print "Announcer : $Link->{'announcer'}   URL : $Link->{'www_url'}\n\n" if $debug;
-				    
-				} else { # If the initial mimetype download could NOT be retrieved successfully
-
-				    print "This URL: $Link->{'www_url'} doesn't really exist!! Return Code: $Link->{'mimetype_returncode'}\n\n";
-
-				} # If the initial mimetype could be retrieved successfully
-
-			    } else { #IS a DUPE
-
-				$Link->db_bump_site;
-
-				if ( $ConfigLinks::bot_enable == 1 ) {
-				    
-				    $Link->bot_bump_site;
-				
-				}
-
-			    }  #If NOT a DUPE
-			                  
-			    use Data::Dumper;
-			    print Dumper $Link;
-			
-			}    #if $parseline
-
-		}  elsif (  $parseline =~ /$myURL_meta/i ) { # this is our URL
-
-		    print "Didn't parse this line because it matched $ConfigLinks::my_url -> $parseline\n" if $debug;
-
-		}  #if segments and parseline
+		} #Make sure we have at least 1 space on the line
 
 	}    #while
 

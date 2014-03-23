@@ -1,11 +1,15 @@
 #!/bin/bash
 
-ROOT=/home/jah/links
+# Set this
+ROOT=/home/user/links
+
+# Shouldn't have to set these
 PARSETWITTER=$ROOT/parsetwitter.pl
-PDIR=${0%`basename $0`}
-LCK_FILE=$ROOT/`basename $0`.lck
 VAR_LOG=$ROOT/logs/links_twitter.log
 
+# Don't set these
+PDIR=${0%`basename $0`}
+LCK_FILE=$ROOT/`basename $0`.lck
 
 
 if [ -f "${LCK_FILE}" ]; then

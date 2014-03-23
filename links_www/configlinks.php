@@ -8,7 +8,7 @@ $LinkupEnable = 0;
 
 /* Enable S3 */
 $s3Enable = 0;
-$s3Bucket = "ngt_thumbs";
+$s3Bucket = "exampleBucket";
 
 /* Image Path (local) */
 $img_path = "../links_img";
