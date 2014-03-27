@@ -10,7 +10,7 @@ $LinkupEnable = 0;
 $s3Enable = 0;
 $s3Bucket = "exampleBucket";
 
-/* Image Path (local) */
+/* Image Path (local) shouldn't need to mess with this */
 $img_path = "../links_img";
 
 /* Folders (local and s3 bucket) */
