@@ -178,7 +178,7 @@ if ($list == "entire") {
 
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav nav-pills">
-            <li class="active"><a href="index.php">lynx <span id="linksBadge" class="badge"></span></a></li>
+            <li class="active"><a href="index.php">links <span id="linksBadge" class="badge"></span></a></li>
       <?php if ($thumbsEnable==1) { print "<li><a href=\"thumbs.php\">thumbs <span id=\"thumbsBadge\" class=\"badge\"></span></a></li>\n"; } ?>
             <li><a href="vids.php">vids <span id="vidsBadge" class="badge"></span></a></li>
 	    <li class="dropdown">

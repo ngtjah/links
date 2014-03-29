@@ -24,6 +24,7 @@ body {
 .nick {
     vertical-align: bottom !important;
     text-align: right;
+    white-space: nowrap;
 }
 
 .table-condensed > thead > tr > th,

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set these
-ROOT=/home/user/jah/links
+ROOT=/home/user/links
 LOGPATH=/home/user/eggdrop/mirclogs
 LOGFILE="#channel.log"
 
