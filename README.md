@@ -20,9 +20,9 @@
 
 ### General Setup
 
-Download Links
+Download Links (https://github.com/djclicking/links)
 Set Home Directory Owner & Permissions
-
+Install perl CPAN
 
 ### Configure Apache
 
@@ -161,16 +161,8 @@ Yum Pre-reqs
 ```
 sudo yum install perl-libwww-perl
 sudo yum install perl-MIME-Types
-sudo yum install file-devel
-sudo yum install perl-CPAN
 ```
 
-Use CPAN to install
-```
-sudo perl -MCPAN -e shell
-
-cpan> install File::LibMagic
-```
 
 Configure variables in links/links_logs.sh
 ```perl
@@ -198,6 +190,14 @@ Saves 4chan images before they are 404'd!!!!!
 Image Download Pre-reqs
 ```
 sudo yum install Imagemagick-perl
+sudo yum install file-devel # (for libmagic)
+```
+
+Use CPAN to install
+```
+sudo perl -MCPAN -e shell
+
+cpan> install File::LibMagic
 ```
 
 Create links_img folder
