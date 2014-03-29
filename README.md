@@ -1,6 +1,6 @@
 **Wiki Table of Contents**
 
-* [Wiki Home](home)
+* [Wiki Home](https://github.com/djclicking/links/wiki/Home)
  * [How it works](https://github.com/djclicking/links/wiki/Home#how-it-works)
  * [How it looks](https://github.com/djclicking/links/wiki/Home#how-it-looks)
  * [What you need](https://github.com/djclicking/links/wiki/Home#what-you-need)
