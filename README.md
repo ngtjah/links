@@ -538,7 +538,7 @@ click show secret access key and add to
 our $aws_secret_access_key = "";
 
 set bucknet name
-our $aws_bucket            = "ngt_thumbs";
+our $aws_bucket            = "";
 
 ### S3 Image Storage (logs, twitter, and pocket)
 our $s3_enable             = "1";  # Copy the files to S3 and delete the local files.
