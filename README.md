@@ -1,11 +1,11 @@
-**Table of Contents**
+**Wiki Table of Contents**
 
-* [Home](home)
+* [Wiki Home](home)
  * [How it works](https://github.com/djclicking/links/wiki/Home#how-it-works)
  * [How it looks](https://github.com/djclicking/links/wiki/Home#how-it-looks)
  * [What you need](https://github.com/djclicking/links/wiki/Home#what-you-need)
 
-* [Full Install](https://github.com/djclicking/links/wiki/Full-Install)
+* [Wiki Full Install](https://github.com/djclicking/links/wiki/Full-Install)
 
 
 # Quick Install
