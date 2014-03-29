@@ -20,9 +20,9 @@
 
 ### General Setup
 
-Download Links (https://github.com/djclicking/links)
-Set Home Directory Owner & Permissions
-Install perl CPAN
+* Download Links (https://github.com/djclicking/links)
+* Set Home Directory Owner & Permissions
+* Install perl CPAN
 
 ### Configure Apache
 
