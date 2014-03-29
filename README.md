@@ -1,83 +1,27 @@
-[[_TOC_]]
+**Table of Contents**
+
+* [Home](home)
+ * [How it works](https://github.com/djclicking/links/wiki/Home#how-it-works)
+ * [How it looks](https://github.com/djclicking/links/wiki/Home#how-it-looks)
+ * [What you need](https://github.com/djclicking/links/wiki/Home#what-you-need)
+
+* [Full Install](https://github.com/djclicking/links/wiki/Full-Install)
 
 
-
-How to install links on a fresh install of Centos 6.5
-
+# Quick Install
 
 ## System Install
 
-### Install LAMP
-Install Apache
-```
-sudo yum install httpd
-sudo service httpd start
-```
-
-Install MySQL
-```
-sudo yum install mysql-server
-sudo service mysqld start
-sudo chkconfig mysqld on
-sudo /usr/bin/mysql_secure_installation
-```
-
-Install PHP
-```
-sudo yum install php php-mysql
-sudo chkconfig httpd on
-sudo service httpd restart
-```
-
-### Create User
-
-Replace ```*user*``` with your username as we go.
-
-Add User
-```
-useradd *user*
-```
-
-Lock User
-```
-passwd -l *user*
-```
-
-### Security
-
-Add IPTables rules to open port 80 and 443 (centos only)
-```
-REJECT_RULE_NO=$(iptables -L INPUT --line-numbers | grep 'REJECT' | awk '{print $1}');/sbin/iptables -I INPUT $REJECT_RULE_NO -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT -m comment --comment "Permit HTTP Service"
-REJECT_RULE_NO=$(iptables -L INPUT --line-numbers | grep 'REJECT' | awk '{print $1}');/sbin/iptables -I INPUT $REJECT_RULE_NO -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT -m comment --comment "Permit HTTP Service"
-
-/sbin/service iptables save
-```
-
-Add SELinux permission for httpd to access the home directory
-```
-chcon -t httpd_sys_content_t /home/*user*/
-chcon -R -t httpd_sys_content_t /home/*user*/links_www/
-```
+* Install LAMP
+* Create a user
+* Open the Firewall for 80/tcp and 443/tcp
+* Add SELinux Permissions
 
 
 ### General Setup
 
 Download Links
-```
-cd /home/*user*
-sudo yum install wget
-wget https://github.com/djclicking/links/archive/master.tar.gz -O links.master.tar.gz
-tar -xzvf links.master.tar.gz
-mv links-master/* .
-rmdir links-master
-```
-
 Set Home Directory Owner & Permissions
-```
-chmod 750 /home/*user*
-chgrp apache /home/*user*
-chown -R *user* /home/*user*
-```
 
 
 ### Configure Apache
@@ -118,6 +62,7 @@ Replace mysqlusername and mysqlpassword
 ```
 mysql -uroot -p -e "GRANT ALL PRIVILEGES ON links.* TO mysqlusername@localhost IDENTIFIED BY 'mysqlpassowrd'"
 ```
+
 Configure mySQL connection settings in links_www/configlinks.php
 ```PHP
 /* MySQL Variables */
@@ -127,20 +72,15 @@ $password = "password";
 $database = "links";
 ```
 
-Test MySQL INSERT
-```
-mysql -uroot -p -e "INSERT INTO links (site,announcer,edate,type) VALUES ('https://github.com/djclicking/links','djclicking', now(),'irc')" links
-```
-You should see a post on the web page now!
-
 
 ## Site Settings
 
 ### Script Settings
+
 Set Path and URL settings in links/ConfigLinks.pm
 ```Perl
 # Main Paths
-our $path = "/home/user/links";
+our $path = "/home/*user*/links";
 
 # My URL
 # Ignore links from this domain or URL.
@@ -169,39 +109,27 @@ $TheSecretPasswd = "#password#";
 
 
 
-## IRC Pull Install
+## IRC Collector
 
 ### Eggdrop Install
 
 Install the eggdrop bot, and links_logs.sh script for retrieving links from the IRC log.
 
-Install Eggdrop Build Pre-reqs
-```
-yum install gcc tcl-devel
-```
-
-Download eggdrop
-```
-Download eggdrop bot from: www.eggheads.org
-
-./configure && make config && make && make install
-```
-
 Setup Eggdrop Directory and create mirclogs directory for irc logs
 ```
-mv /root/eggdrop /home/jah
-mkdir eggdrop/mirclogs
-mkdir eggdrop/mirclogs/oldlogs
+mv /root/eggdrop /home/*user*
+mkdir /home/*user*/eggdrop/mirclogs
+mkdir /home/*user*/eggdrop/mirclogs/oldlogs
 ```
 
 Copy Logger.tcl script to eggdrop scripts folder
 ```
-cp links/Logger.tcl eggdrop/scripts
+cp links/Logger.tcl /home/*user*/eggdrop/scripts
 ```
 
 Change the owner of the eggdrop directory to your user
 ```
-chown -R *user* eggdrop
+sudo chown -R *user* /home/*user*/eggdrop
 ```
 
 Configure eggdrop.conf (it is long, read the whole thing or it won't start)
@@ -217,8 +145,8 @@ source scripts/Logger.tcl
 
 Run eggdrop as your new user
 ```
-su - jah
-cd eggdrop
+su - *user*
+cd /home/*user/eggdrop
 ./eggdrop
 ```
 
@@ -231,15 +159,15 @@ Go register your username and password with the bot in IRC.
 
 Yum Pre-reqs
 ```
-yum install perl-libwww-perl
-yum install perl-MIME-Types
-yum install file-devel
-yum install perl-CPAN
+sudo yum install perl-libwww-perl
+sudo yum install perl-MIME-Types
+sudo yum install file-devel
+sudo yum install perl-CPAN
 ```
 
 Use CPAN to install
 ```
-perl -MCPAN -e shell
+sudo perl -MCPAN -e shell
 
 cpan> install File::LibMagic
 ```
@@ -247,20 +175,20 @@ cpan> install File::LibMagic
 Configure variables in links/links_logs.sh
 ```perl
 # Set these
-ROOT=/home/user/jah/links
-LOGPATH=/home/user/eggdrop/mirclogs
+ROOT=/home/*user*/links
+LOGPATH=/home/*user*/eggdrop/mirclogs
 LOGFILE="#channel.log"
 ```
 
 Add to crontab
 ```
-*/1  * * * *    jah /home/jah/links/links_logs.sh
+*/1  * * * *    *user* /home/*user*/links/links_logs.sh
 ```
 
 Your site should be picking up new links from IRC now!
 
 
-## Image Download Feature
+## Image Download
 
 This feature downloads, saves and creates a thumbnail using Image Magick for each image that is found.
 Saves 4chan images before they are 404'd!!!!!
@@ -269,7 +197,7 @@ Saves 4chan images before they are 404'd!!!!!
 
 Image Download Pre-reqs
 ```
-yum install Imagemagick-perl
+sudo yum install Imagemagick-perl
 ```
 
 Create links_img folder
@@ -286,8 +214,8 @@ mkdir /home/*user*/links_img/tmp
 
 Set Permissions
 ```
-chown -R *user*:apache /home/*user*/links_img
-chmod -R 755 /home/*user*/links_img
+sudo chown -R *user*:apache /home/*user*/links_img
+sudo chmod -R 755 /home/*user*/links_img
 ```
 
 ### Image Download Settings
@@ -297,8 +225,8 @@ Configure variables in links/ConfigLinks.pm
 # Enable/Disable Image Download. (logs, twitter, and pocket)
 our $img_download_enable = "1";
 
-our $imgpath                 = "/home/user/links_img";       #Local
-our $image_magick_tmp_path   = "/home/user/links_img/tmp";   #Temp folder for thumbnail creation (up to 1.5G)
+our $imgpath                 = "/home/*user*/links_img";       #Local
+our $image_magick_tmp_path   = "/home/*user*/links_img/tmp";   #Temp folder for thumbnail creation (up to 1.5G)
 ```
 
 note: Very large animated GIFs can require a lot of temp space to create the thumbnail. A extremely large 40MB gif took 1.8G of temp space and 50 minutes to create the thumbnail.
@@ -322,7 +250,7 @@ The bot will announce in IRC a when a new link is found in a twitter @mention or
 
 Install Pre-reqs
 ```
-yum install perl-Net-Telnet
+sudo yum install perl-Net-Telnet
 ```
 
 Un-comment the listen line and set the port number in eggdrop.conf.
@@ -372,20 +300,20 @@ If you would like to push to twitter or pull from twitter do these steps.
 
 Twitter Pre-reqs
 ```
-yum install perl-Crypt-SSLeay
+sudo yum install perl-Crypt-SSLeay
 ```
 
 Install from CPAN
 
 If Bitly fails on tinyurl.t just try it again a few times (https://rt.cpan.org/Public/Bug/Display.html?id=88052)
 ```
-perl -MCPAN -e shell
+sudo perl -MCPAN -e shell
 
 cpan> install WWW::Shorten::Bitly
 ```
 
 ```
-perl -MCPAN -e shell
+sudo perl -MCPAN -e shell
 
 cpan> install Net::Twitter
 ```
@@ -423,12 +351,12 @@ our $bitly_api_key     = "";
 
 Run the perl script manually first as your user to authorize with twitter as a client. 
 ```
-su - jah
-/home/jah/links/parsetwitter.pl
+su - *user*
+/home/*user*/links/parsetwitter.pl
 exit
 ```
 
-The script will output access token information that needs to into the config file.
+The script will output access token information that needs to be added to the config file.
 
 Add the access tokens to links/ConfigLinks.pm
 ```perl
@@ -447,14 +375,14 @@ $twitter_account = "username"; # No @ sign
 ```
 
 
-## Twitter Push
+## Twitter Post
 
 Push all new posts gathered from irc, twitter and pocket up to twitter as new tweets.
 
 The ban_domin settings are to stop certain urls or domains from making it to twitter.
 For instance if your URL is links.com/links the scripts will never grab a link from itself (links.com/links/*) already but if you want to stop all links.com URLs from ever being tweeted you can put that in here so your URL remains private.
 
-### Twitter Push Config
+### Twitter Post Config
 
 links/ConfigLinks.pm
 ```perl
@@ -468,7 +396,7 @@ our $ban_domain_twitter2  = "";
 ```
 
 
-## Twitter Pull (Mentions)
+## Twitter Collector
 
 Pull tweets in from anyone who @mentions your twitter account.
 
@@ -476,12 +404,12 @@ Pull tweets in from anyone who @mentions your twitter account.
 Set variables in links/links_twitter.sh
 ```
 # Set this
-ROOT=/home/user/links
+ROOT=/home/*user*/links
 ```
 
 add to /etc/cronttab
 ```
-*/10 * * * *    *user* /home/jah/links/links_twitter.sh
+*/10 * * * *    *user* /home/*user*/links/links_twitter.sh
 ```
 
 To disable pulling from twitter just stop the crontab by commenting it out.
@@ -489,18 +417,18 @@ To disable pulling from twitter just stop the crontab by commenting it out.
 If you are adding a twitter account populated with tweets it will only retrieve the last 50 entries the first time.
 
 
-## Pocket
+## Pocket Collector
 
 Retrieve URLs from Pocket (getpocket.com)
 This app gives us a web extension and mobile app/share for quick posting.
 
 ### Pocket Setup
 ```
-yum install perl-Net-SSLeay
+sudo yum install perl-Net-SSLeay
 ```
 
 ```
-perl -MCPAN -e shell
+sudo perl -MCPAN -e shell
 
 cpan> install Class::Accessor::Lite
 ```
@@ -510,7 +438,7 @@ https://github.com/kiririmode/p5-WebService-Pocket-Lite
 cd /home/user
 git clone git://github.com/kiririmode/p5-WebService-Pocket-Lite.git
 cd p5-WebService-Pocket-Lite
-perl Makefile.PL
+sudo perl Makefile.PL
 make && make test
 ```
 
@@ -529,11 +457,17 @@ $LinkupEnable = 1;
 $pocket_consumer_key = "";
 ```
 
+links/ConfigLinks.pm
+```perl
+# Pocket API (parsepocket.pl)
+our $pocket_consumer_key = "";
+```
+
 Authorize a pocket account via the link-up page.
 
 Add to crontab
 ```
-*/2  * * * *    *user* /home/jah/links/links_pocket.sh
+*/2  * * * *    *user* /home/*user*/links/links_pocket.sh
 ```
 
 If you authorize a pocket account populated with URLs it will only retrieve the last 10 entries per user the first time.
@@ -548,14 +482,14 @@ Use Amazon S3 storage for primary or backup storage.
 
 Install Pre-reqs
 ```
-yum install perl-XML-LibXML
+sudo yum install perl-XML-LibXML
 ```
 
 Install CPAN
 ```
-perl -MCPAN -e shell
+sudo perl -MCPAN -e shell
 
-cpan[1]> install Net::Amazon::S3
+cpan> install Net::Amazon::S3
 ```
 
 Sign-up for aws account http://aws.amazon.com/console/
@@ -606,7 +540,7 @@ our $aws_secret_access_key = "";
 set bucknet name
 our $aws_bucket            = "ngt_thumbs";
 
-# Amazon S3 Image Storage (logs, twitter, and pocket)
+### S3 Image Storage (logs, twitter, and pocket)
 our $s3_enable             = "1";  # Copy the files to S3 and delete the local files.
 our $s3_delete_local_imgs  = "0";  # Delete the local image and thumb after we upload to S3.
 ```
@@ -630,14 +564,3 @@ $s3Enable = 1;
 $s3Bucket = "bucket_name";
 ```
 
-
-
-
-
-
-Setup Eggdrop
-
-http://www.eggheads.org/redirect.php?url=ftp://ftp.eggheads.org/pub/eggdrop/source/1.6/eggdrop1.6.21.tar.gz
-
-
-yum provides "*/perl(XML::LibXML)" OR yum search perl | grep -i xml
