@@ -1,11 +1,11 @@
 **Wiki Table of Contents**
 
-* [Wiki Home](https://github.com/djclicking/links/wiki/Home)
- * [How it works](https://github.com/djclicking/links/wiki/Home#how-it-works)
- * [How it looks](https://github.com/djclicking/links/wiki/Home#how-it-looks)
- * [What you need](https://github.com/djclicking/links/wiki/Home#what-you-need)
+* [Wiki Home](https://github.com/ngtjah/links/wiki/Home)
+ * [How it works](https://github.com/ngtjah/links/wiki/Home#how-it-works)
+ * [How it looks](https://github.com/ngtjah/links/wiki/Home#how-it-looks)
+ * [What you need](https://github.com/ngtjah/links/wiki/Home#what-you-need)
 
-* [Wiki Full Install](https://github.com/djclicking/links/wiki/Full-Install)
+* [Wiki Full Install](https://github.com/ngtjah/links/wiki/Full-Install)
 
 
 # Quick Install
@@ -20,7 +20,7 @@
 
 ### General Setup
 
-* Download Links (https://github.com/djclicking/links)
+* Download Links (https://github.com/ngtjah/links)
 * Set Home Directory Owner & Permissions
 * Install perl CPAN
 
