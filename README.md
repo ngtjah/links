@@ -60,7 +60,7 @@ mysql -uroot -p links < links/links.sql
 Create MySQL user
 Replace mysqlusername and mysqlpassword
 ```
-mysql -uroot -p -e "GRANT ALL PRIVILEGES ON links.* TO mysqlusername@localhost IDENTIFIED BY 'mysqlpassowrd'"
+mysql -uroot -p -e "GRANT ALL PRIVILEGES ON links.* TO mysqlusername@localhost IDENTIFIED BY 'mysqlpassword'"
 ```
 
 Configure mySQL connection settings in links_www/configlinks.php
