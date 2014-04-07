@@ -597,33 +597,29 @@ sub get_title {
 
 	    }
 
-	    if ( ! $self->{'www_img'} ) {
-
-	        if ( $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i ) {
+	    if ( ! $self->{'www_img'} && $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i ) {
+	    
+	        my @links = $res->header('link');
 	        
-	            my @links = $res->header('link');
-	            
-	            foreach $links ( @links ) {
-	            
-	                if ( $links =~ /.*rel=\"image_src\".*/ ) {
-	            
-	            	    my $imgur = $links;
-	            
-	            	    if ( $imgur =~ /<(.+?)>;/ ) {
-	            
-	            		$self->{'www_img'} = $1;
-	            
-	            	        print "Found the imageur.com image URL: $self->{'www_img'} \n" if $main::debug;
-	            
-			    }
-	                
-	                }
-
-	            } # Foreach
+	        foreach $links ( @links ) {
 	        
-	        }  # If imgur.com
+	            if ( $links =~ /.*rel=\"image_src\".*/ ) {
+	        
+	        	my $imgur = $links;
+	        
+	        	if ( $imgur =~ /<(.+?)>;/ ) {
+	        
+	        	    $self->{'www_img'} = $1;
+	        
+	        	    print "Found the imageur.com image URL: $self->{'www_img'} \n" if $main::debug;
+	        
+	    	    }
+	            
+	            }
 
-	    }  # If www_img exists
+	        } # Foreach
+	    
+	    }  # If www_img not set AND imgur.com
 	    
 	    print "Title: " . $self->{'title'} . "\n" if $main::debug;
 
