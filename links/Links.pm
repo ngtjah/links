@@ -158,6 +158,25 @@ sub get_remote_server_mimetype {
 
 	print "Remote Server Mime Type: $self->{'mimetype'} \n" if $main::debug;
 
+	# Special code for imgur.com so we will download the image when the webpage is linked
+	if ( $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i ) {
+
+	    $self->{'mimetype'} = "image/gif";
+	    print "Forced Mime Type for imgur.com: $self->{'mimetype'} \n" if $main::debug;
+
+	    get_title($self);
+
+	}
+
+
+	#Set the www_img if it doesn't exist
+	if ( ! $self->{'www_img'} ) {
+
+	    $self->{'www_img'} = $self->{'www_url'};
+
+	}
+
+
     }
 
     return $res->is_success;
@@ -179,20 +198,20 @@ sub create_img_filename {
     my $full_path;
 
     #If the URL contains the filename grab it.
-    if ( $self->{'www_url'} =~ /.*filename\=.*\.(jpg|jpeg|png|gif).*/i ) {
+    if ( $self->{'www_img'} =~ /.*filename\=.*\.(jpg|jpeg|png|gif).*/i ) {
     
         #Extract the file name from the URL Query String (yfrog);
-        my @www_segments_filenameeq = split( /\&/, $self->{'www_url'} );
+        my @www_segments_filenameeq = split( /\&/, $self->{'www_img'} );
         my @filename_grep11 =
              grep( /.*filename.*/i, @www_segments_filenameeq );
 
         $filename = $filename_grep11[0];
         $filename =~ s/filename\=//;
-    
-    } elsif ( $self->{'www_url'} =~ /.*\.(jpg|jpeg|png|gif).*/i ) {
+
+    } elsif ( $self->{'www_img'} =~ /.*\.(jpg|jpeg|png|gif).*/i || $self->{'www_img'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i ) {
     
         #Extract the file name from the URL (if it is there)
-    	my @www_segments_fwdslash = split( /\//, $self->{'www_url'} );
+    	my @www_segments_fwdslash = split( /\//, $self->{'www_img'} );
     	my @filename_grep =
     	     grep( /.*\.(jpg|jpeg|png|gif).*/i, @www_segments_fwdslash );
     	$filename = $filename_grep[-1];
@@ -206,15 +225,15 @@ sub create_img_filename {
     	}
 
 	print "File name created from URL: $filename \n" if $main::debug;
-    
+
     } else { # This is where we need to make up a file name because its NOT in the URL
     
         #Get the domain name
-        $domain = $self->{'www_url'};
+        $domain = $self->{'www_img'};
         $domain =~ s/http\:\/\///i;
     
-        my @www_url_fwdslash = split( /\//, $domain );
-           $domain           = $www_url_fwdslash[0];
+        my @www_img_fwdslash = split( /\//, $domain );
+           $domain           = $www_img_fwdslash[0];
     
         my $range              = 10000;
         my $random_number      = int( rand($range) );
@@ -283,13 +302,13 @@ sub download_image {
 
     $self = shift;
 
-    print "Attempting to Download $self->{'www_url'} IMG file to Path: $self->{'full_path'} \n" if $main::debug;
+    print "Attempting to Download $self->{'www_img'} IMG file to Path: $self->{'full_path'} \n" if $main::debug;
 
     #Setup the UserAgent
     my $ua = new LWP::UserAgent(timeout=>15);
 
     #Go GET the img file
-    my $req = new HTTP::Request 'GET', $self->{'www_url'};
+    my $req = new HTTP::Request 'GET', $self->{'www_img'};
     my $res = $ua->request( $req, $self->{'full_path'} );
 
     $self->{'imagedownload_returncode'} = $res->code;
@@ -328,7 +347,7 @@ sub get_local_mimetype {
     
     #If the file is labeled as not a GIF but its actually a gif rename it.
     #I found ImageMagick doesn't like this.
-    if ( $self->{'www_url'} !~ /.*\.(gif)$/i && $self->{'mimetype'} =~ /image\/gif.*/) {
+    if ( $self->{'www_img'} !~ /.*\.(gif)$/i && $self->{'mimetype'} =~ /image\/gif.*/) {
     
         my $full_path_new = $self->{'full_path'};
         $full_path_new = $self->{'full_path'} . '.gif';
@@ -577,6 +596,34 @@ sub get_title {
 	       $self->{'title'} = $res->header('Title');
 
 	    }
+
+	    if ( ! $self->{'www_img'} ) {
+
+	        if ( $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i ) {
+	        
+	            my @links = $res->header('link');
+	            
+	            foreach $links ( @links ) {
+	            
+	                if ( $links =~ /.*rel=\"image_src\".*/ ) {
+	            
+	            	    my $imgur = $links;
+	            
+	            	    if ( $imgur =~ /<(.+?)>;/ ) {
+	            
+	            		$self->{'www_img'} = $1;
+	            
+	            	        print "Found the imageur.com image URL: $self->{'www_img'} \n" if $main::debug;
+	            
+			    }
+	                
+	                }
+
+	            } # Foreach
+	        
+	        }  # If imgur.com
+
+	    }  # If www_img exists
 	    
 	    print "Title: " . $self->{'title'} . "\n" if $main::debug;
 
