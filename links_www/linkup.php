@@ -8,6 +8,9 @@ include('functions/functions.thumbs.php');
 
 require_once('api/Pocket_api.php');
 
+
+$protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
+
 /**
  * ===================================
  *
@@ -151,7 +154,7 @@ if ($list == "entire") {
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
 
-    <script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
+    <script src="<?php echo $protocol ?>://platform.twitter.com/widgets.js" type="text/javascript"></script>
 
   </head>
 
