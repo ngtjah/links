@@ -163,6 +163,12 @@ if ($list == "entire") {
 
   <body>
 
+    <!-- SSL Alert -->
+    <div class="alert alert-success fade" id="sslAlert">
+	  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	  <strong>Warning!</strong> Switch to the secure site? <a href="https://<?php print $_SERVER[HTTP_HOST] . $_SERVER[REQUEST_URI] ?>" class="alert-link">Yes</a>
+    </div>
+
     <!-- Static navbar -->
     <div class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="container">
@@ -279,6 +285,7 @@ if ($list == "entire") {
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="dist/js/bootstrap.min.js"></script>
     <script src="js/getBadges.ajax.js"></script>
+    <script src="js/ngtr.js"></script>
   </body>
 </html>
 

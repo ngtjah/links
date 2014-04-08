@@ -178,4 +178,24 @@ body {
    text-align: center;
 }
 
+/* SSL Alert */
+.fade {
+    display: none;
+    opacity: 0;
+    -webkit-transition: opacity 0.15s linear;
+    -moz-transition: opacity 0.15s linear;
+    -o-transition: opacity 0.15s linear;
+    transition: opacity 0.15s linear;
+}
 
+.fade.in {
+    display: inherit;
+    opacity: 1;
+}
+
+.alert {
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
