@@ -158,11 +158,11 @@ sub get_remote_server_mimetype {
 
 	print "Remote Server Mime Type: $self->{'mimetype'} \n" if $main::debug;
 
-	# Special code for imgur.com so we will download the image when the webpage is linked
-	if ( $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i ) {
+	# Special code for special sites so we try to download the main image when the webpage is linked
+	if ( $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i || $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?t\.co\/.*/i || $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?twitter\.com\/.*/i ) {
 
 	    $self->{'mimetype'} = "image/gif";
-	    print "Forced Mime Type for imgur.com: $self->{'mimetype'} \n" if $main::debug;
+	    print "Forced Mime Type for image hosted site: $self->{'mimetype'} \n" if $main::debug;
 
 	    get_title($self);
 
@@ -597,27 +597,74 @@ sub get_title {
 
 	    }
 
-	    if ( ! $self->{'www_img'} && $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i ) {
-	    
-	        my @links = $res->header('link');
-	        
-	        foreach $links ( @links ) {
-	        
-	            if ( $links =~ /.*rel=\"image_src\".*/ ) {
-	        
-	        	my $imgur = $links;
-	        
-	        	if ( $imgur =~ /<(.+?)>;/ ) {
-	        
-	        	    $self->{'www_img'} = $1;
-	        
-	        	    print "Found the imageur.com image URL: $self->{'www_img'} \n" if $main::debug;
-	        
-	    	    }
-	            
-	            }
+	    #Detect image on Special Image hosting sites
+	    if ( ! $self->{'www_img'} ) {
 
-	        } # Foreach
+		 if ( $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i ) {
+	    
+	             my @links = $res->header('link');
+	             
+	             foreach $links ( @links ) {
+	             
+	                 if ( $links =~ /.*rel=\"image_src\".*/ ) {
+	             
+	                     my $imgur = $links;
+	                     
+	                     if ( $imgur =~ /<(.+?)>;/ ) {
+	                     
+	                         $self->{'www_img'} = $1;
+	                     
+	                         print "Found the imageur.com image URL: $self->{'www_img'} \n" if $main::debug;
+	                     
+		             }
+	                 
+	                 }
+		     
+	             } # Foreach
+
+		 } elsif ( $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?t\.co\/.*/i || $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?twitter\.com\/.*/i ) {
+
+		     require HTML::Parser;
+
+		     $p = HTML::Parser->new( start_h => [\my @accum, "text"])->parse($res->content);
+
+		     print "START dumping \n\n";
+
+		     #my @segments = split( /\n/, @accum );
+
+		     foreach $links ( @accum ) {
+
+			 #use Data::Dumper;
+                         #print Dumper Dumper $links;
+			 #print "\n\n";
+
+
+			 if ( $links->[0] =~ /.*data-resolved-url-large.*/ ) {
+
+                             chomp $links->[0];
+
+                             #data-resolved-url-large=
+                             if ( $links->[0] =~ /data-resolved-url-large=\"(.+?)\"/ ) {
+			     
+                                 $self->{'www_img'} = $1;
+			     
+                                 print "Found the twitter.com image URL: $self->{'www_img'} \n" if $main::debug;
+			     
+                             }
+
+                         }
+
+
+		     } # foreach
+
+		     #print map $_->[0], @accum;
+
+		     #use Data::Dumper;
+		     #print Dumper Dumper @accum;
+		     print "END dumping \n\n";
+
+
+		 }  # Imgur
 	    
 	    }  # If www_img not set AND imgur.com
 	    
@@ -631,7 +678,13 @@ sub get_title {
 }
 
 
-
+# This parser only looks at opening tags
+sub start { 
+    my ($self, $tagname, $attr, $attrseq, $origtext) = @_;
+    if ($tagname eq 'a') {
+	print "URL found: ", $attr->{ href }, "\n";
+    }
+}
 
 sub db_insert_site {
 
