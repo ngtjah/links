@@ -159,7 +159,7 @@ sub get_remote_server_mimetype {
 	print "Remote Server Mime Type: $self->{'mimetype'} \n" if $main::debug;
 
 	# Special code for special sites so we try to download the main image when the webpage is linked
-	if ( $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i || $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?t\.co\/.*/i || $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?twitter\.com\/.*/i ) {
+	if ( $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?imgur\.com\/.*/i || $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?t\.co\/.*/i || $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?twitter\.com\/.*/i || $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?instagram\.com\/.*/i || $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?instagr\.am\/.*/i ) {
 
 	    $self->{'mimetype'} = "image/gif";
 	    print "Forced Mime Type for image hosted site: $self->{'mimetype'} \n" if $main::debug;
@@ -628,16 +628,7 @@ sub get_title {
 
 		     $p = HTML::Parser->new( start_h => [\my @accum, "text"])->parse($res->content);
 
-		     print "START dumping \n\n";
-
-		     #my @segments = split( /\n/, @accum );
-
 		     foreach $links ( @accum ) {
-
-			 #use Data::Dumper;
-                         #print Dumper Dumper $links;
-			 #print "\n\n";
-
 
 			 if ( $links->[0] =~ /.*data-resolved-url-large.*/ ) {
 
@@ -657,16 +648,42 @@ sub get_title {
 
 		     } # foreach
 
-		     #print map $_->[0], @accum;
+		 } elsif ( $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?instagram\.com\/.*/i || $self->{'www_url'} =~ /http(s)?:\/\/(www\.)?instagr\.am\/.*/i ) {
+
+		     #Head parser can't see og:image
+		     #require HTML::HeadParser;
+		     #$hp = HTML::HeadParser->new;
+		     #$hp->parse($res->content) and  print "not finished";
+		     
+		     #my @links = $res->header('og:image');
+
+		     my @segments = split( /\n/, $res->content );
+
+                     foreach $links ( @segments ) {
+		     
+                         if ( $links =~ /.*meta property=\"og:image.*/ ) {
+		     
+                             my $instagram = $links;
+			     
+			     #<meta property="og:image" content="http://distilleryimage8.ak.instagram.com/be78_8.jpg" />
+                             if ( $instagram =~ /content=\"(.+?)\"/ ) {
+		     
+                                 $self->{'www_img'} = $1;
+		     
+                                 print "Found the instagram.com image URL: $self->{'www_img'} \n" if $main::debug;
+		     
+                             }
+		     
+                         }
+		     
+                     } # Foreach
 
 		     #use Data::Dumper;
-		     #print Dumper Dumper @accum;
-		     print "END dumping \n\n";
+		     #print Dumper $res;
 
-
-		 }  # Imgur
+                 } # Imgur
 	    
-	    }  # If www_img not set AND imgur.com
+	    }  # If www_img not set
 	    
 	    print "Title: " . $self->{'title'} . "\n" if $main::debug;
 
