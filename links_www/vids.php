@@ -225,12 +225,16 @@ if ($list == "entire") {
 	
           <div class="btn-toolbar nav navbar-nav btn-group-md pull-right">
             
-	    <a href="vids.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>"><button type="button" class="btn btn-default navbar-btn">
-                   <span class="glyphicon glyphicon-arrow-left"></span>
-                 </button></a>
-            <a href="vids.php?newer=<?php echo $newestid . "&search=" . urlencode($partialurl); ?>"><button type="button" class="btn btn-default navbar-btn <?php if(!isset($_GET['newer']) && !isset($_GET['older'])){echo " disabled";} ?>">
-                   <span class="glyphicon glyphicon-arrow-right"></span>
-                 </button></a>
+              <a href="vids.php?newer=<?php echo $newestid . '&search=' . urlencode($partialurl); ?>">
+                <button type="button" class="btn btn-default prev navbar-btn">
+                  <i class="glyphicon glyphicon-chevron-left"></i>
+                </button>
+              </a>
+              <a href="vids.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
+                <button type="button" class="btn btn-primary next navbar-btn">
+                  <i class="glyphicon glyphicon-chevron-right"></i>
+                </button>
+              </a>
 
            </div> <!--/.btn-toolbar -->
 
