@@ -200,8 +200,31 @@ if ($list == "entire") {
 	    </li>
           </ul>
 
-               <form class="navbar-form navbar-header pull-right" name="myform1" action="index.php" method="POST">
-			      <div class="form-group">Results: 
+          <div class="pull-right">
+           <div class="btn-toolbar nav navbar-nav btn-group-md">
+              <a href="index.php?newer=<?php echo $newestid . "&search=" . urlencode($partialurl); ?>">
+                <button type="button" class="btn btn-default prev navbar-btn">
+                  <i class="glyphicon glyphicon-chevron-left"></i>
+                </button></a>
+              <a href="index.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
+                <button type="button" class="btn btn-primary next navbar-btn">
+                  <i class="glyphicon glyphicon-chevron-right"></i>
+                </button>
+              </a>
+           </div> <!--/.btn-toolbar -->
+
+           <div class="nav navbar-nav">
+           	<form class="navbar-form" role="search" method="POST" name="myform" action="index.php">
+           	  <div class="form-group">
+           	    <input type="text" class="form-control" placeholder="Search" name="partialurl" value="<?php echo $partialurl_clean; ?>">
+           	  </div>
+           	  <button type="submit" class="btn btn-default">Submit</button>
+           	</form> 
+           </div>
+
+           <div class="nav navbar-nav">
+               <form class="navbar-form" name="myform1" action="index.php" method="POST">
+                 <div class="form-group">Results: 
 		   <select class="form-control" name="MaxResultsPost" onchange="resubmit_all()">
 			<?php
 			      $myMaxResultsarray = array(25, 50, 75, 100, 200);
@@ -218,52 +241,20 @@ if ($list == "entire") {
 				  print( "<option>$thismaxresults</option>\n" );
 				}
 			    }
-                ?>
+                      ?>
                   </select>
                  </div>
-                </form>
-
-
-           	<form class="navbar-form navbar-right" role="search" method="POST" name="myform" action="index.php">
-           	  <div class="form-group">
-           	    <input type="text" class="form-control" placeholder="Search" name="partialurl" value="<?php echo $partialurl_clean; ?>">
-           	  </div>
-           	  <button type="submit" class="btn btn-default">Submit</button>
-           	</form> 
-
-          <div class="btn-toolbar nav navbar-nav btn-group-md pull-right">
-            
-              <a href="index.php?newer=<?php echo $newestid . '&search=' . urlencode($partialurl); ?>">
-                <button type="button" class="btn btn-default prev navbar-btn">
-                  <i class="glyphicon glyphicon-chevron-left"></i>
-                </button>
-              </a>
-              <a href="index.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
-                <button type="button" class="btn btn-primary next navbar-btn">
-                  <i class="glyphicon glyphicon-chevron-right"></i>
-                </button>
-              </a>
-
-           </div> <!--/.btn-toolbar -->
+               </form>
+           </div>
+          </div> <!-- /.pull-right -->
 
         </div> <!--/.nav-collapse -->
 
       </div> <!--/.container -->
-     </div> <!--/.navbar -->
-      <!-- END Fixed navbar -->
 
-	<!-- <div class="navbar-fixed-bottom">
-	   <div class="container">
-	
-	      <ul class="pager">
-		      <li class="previous"><a href="index.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">&larr; Older</a></li>
-		      <?php if(isset($_GET['newer']) || isset($_GET['older']))
-			    echo '<li class="next"><a href="index.php?newer=' . $newestid . '&search=' . urlencode($partialurl) . '">Newer &rarr;</a></li>';
-                      ?>
-	      </ul>
-	
-	   </div> <!-- container -->
-	</div> <!-- navbar fixed for arrows -->
+     </div> <!--/.navbar -->
+
+      <!-- END Fixed navbar -->
 
     <div class="container container-main">
 

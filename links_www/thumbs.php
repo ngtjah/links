@@ -197,8 +197,31 @@ if ($list == "entire") {
 	    </li>
           </ul>
 
-               <form class="navbar-form navbar-header pull-right" name="myform1" action="thumbs.php" method="POST">
-			      <div class="form-group">Results: 
+          <div class="pull-right">
+           <div class="btn-toolbar nav navbar-nav btn-group-md">
+              <a href="thumbs.php?newer=<?php echo $newestid . "&search=" . urlencode($partialurl); ?>">
+                <button type="button" class="btn btn-default prev navbar-btn">
+                  <i class="glyphicon glyphicon-chevron-left"></i>
+                </button></a>
+              <a href="thumbs.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
+                <button type="button" class="btn btn-primary next navbar-btn">
+                  <i class="glyphicon glyphicon-chevron-right"></i>
+                </button>
+              </a>
+           </div> <!--/.btn-toolbar -->
+
+           <div class="nav navbar-nav">
+           	<form class="navbar-form" role="search" method="POST" name="myform" action="index.php">
+           	  <div class="form-group">
+           	    <input type="text" class="form-control" placeholder="Search" name="partialurl" value="<?php echo $partialurl_clean; ?>">
+           	  </div>
+           	  <button type="submit" class="btn btn-default">Submit</button>
+           	</form> 
+           </div>
+
+           <div class="nav navbar-nav">
+               <form class="navbar-form" name="myform1" action="index.php" method="POST">
+                 <div class="form-group">Results: 
 		   <select class="form-control" name="MaxResultsPost" onchange="resubmit_all()">
 			<?php
 			      $myMaxResultsarray = array(25, 50, 75, 100, 200);
@@ -215,40 +238,12 @@ if ($list == "entire") {
 				  print( "<option>$thismaxresults</option>\n" );
 				}
 			    }
-                ?>
+                      ?>
                   </select>
                  </div>
-                </form>
-
-           	<form class="navbar-form navbar-right" role="search" method="POST" name="myform" action="thumbs.php">
-           	  <div class="form-group">
-           	    <input type="text" class="form-control" placeholder="Search" name="partialurl" value="<?php echo $partialurl_clean; ?>">
-           	  </div>
-           	  <button type="submit" class="btn btn-default">Submit</button>
-           	</form> 
-
-	
-          <div class="nav navbar-nav btn-group-md pull-right">
-            
-              <a href="thumbs.php?newer=<?php echo $newestid . '&search=' . urlencode($partialurl); ?>">
-                <button type="button" class="btn btn-default prev navbar-btn">
-                  <i class="glyphicon glyphicon-chevron-left"></i>
-                </button>
-              </a>
-              <a href="thumbs.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
-                <button type="button" class="btn btn-primary next navbar-btn">
-                  <i class="glyphicon glyphicon-chevron-right"></i>
-                </button>
-              </a>
-
-	    <!-- Old buttons <a href="thumbs.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>"><button type="button" class="btn btn-default navbar-btn">
-                   <span class="glyphicon glyphicon-arrow-left"></span>
-                 </button></a>
-            <a href="thumbs.php?newer=<?php echo $newestid . "&search=" . urlencode($partialurl); ?>"><button type="button" class="btn btn-default navbar-btn <?php if(!isset($_GET['newer']) && !isset($_GET['older'])){echo " disabled";} ?>">
-                   <span class="glyphicon glyphicon-arrow-right"></span>
-                 </button></a> -->
-
-           </div> <!--/.btn-toolbar -->
+               </form>
+           </div>
+          </div> <!-- /.pull-right -->
 
         </div> <!--/.nav-collapse -->
 
