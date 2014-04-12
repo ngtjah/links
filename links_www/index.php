@@ -218,7 +218,7 @@ if ($list == "entire") {
            	  <div class="form-group">
            	    <input type="text" class="form-control" placeholder="Search" name="partialurl" value="<?php echo $partialurl_clean; ?>">
            	  </div>
-           	  <button type="submit" class="btn btn-default">Submit</button>
+           	  <button type="submit" class="btn btn-default hidden">Submit</button>
            	</form> 
            </div>
 
