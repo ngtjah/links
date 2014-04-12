@@ -160,7 +160,7 @@ if ($list == "entire") {
     <link href="dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="css/navbar-static-top.css" rel="stylesheet">
+    <link href="css/navbar-fixed-top.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <!-- <link href="css/grid.css" rel="stylesheet"> -->
@@ -183,8 +183,8 @@ if ($list == "entire") {
 
   <body>
 
-    <!-- Static navbar -->
-    <div class="navbar navbar-default navbar-static-top" role="navigation">
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -214,7 +214,7 @@ if ($list == "entire") {
         </div> <!--/.nav-collapse -->
 
       </div> <!--/.container -->
-     </div> <!--/.END Static navbar -->
+     </div> <!--/.END Fixed navbar -->
 
 
 

@@ -135,7 +135,7 @@ if ($list == "entire") {
     <link href="dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="css/navbar-static-top.css" rel="stylesheet">
+    <link href="css/navbar-fixed-top.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <!-- <link href="grid.css" rel="stylesheet"> -->
@@ -172,8 +172,8 @@ if ($list == "entire") {
     </div>
   </div>  -->
 
-    <!-- Static navbar -->
-    <div class="navbar navbar-default navbar-static-top" role="navigation">
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -246,9 +246,9 @@ if ($list == "entire") {
 
       </div> <!--/.container -->
      </div> <!--/.navbar -->
-      <!-- END Static navbar -->
+      <!-- END Fixed navbar -->
 
-	<div class="navbar-fixed-bottom">
+	<!-- <div class="navbar-fixed-bottom">
 	   <div class="container">
 	
 	      <ul class="pager">
@@ -318,9 +318,6 @@ if ($list == "entire") {
 
     <!-- Custom styles for this template -->
     <link href="css/signin.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="css/navbar-static-top.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="css/ngtr.css" rel="stylesheet">
