@@ -4,6 +4,14 @@ function showAlert() {
 
     $("#sslAlert").addClass("in");
 
+    //var $alertDiv = $("#sslAlert");
+    //if ($alertDiv.hasClass("in")) {
+    //    $alertDiv.removeClass("in").css("display", "");
+    //}
+    //else {
+    //    $("#sslAlert").addClass("in");
+    //}
+
 }
 
 window.setTimeout(function () {
@@ -16,6 +24,7 @@ window.setTimeout(function () {
 
 }, 10000);
 
+//$(".alert").alert()
 
 // Fade the Menu Dropdown
 $(function() {
@@ -28,3 +37,11 @@ $(function() {
 
 });
 
+
+//$(document).on('webkitTransitionEnd transitionend oTransitionEnd', ".fade", 
+//    function (evnt) {
+//        var $faded = $(evnt.target);
+//        if ($faded.hasClass("in")) {
+//            $faded.css("display", "");
+//        }
+//});

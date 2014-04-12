@@ -163,11 +163,14 @@ if ($list == "entire") {
 
   <body>
 
-    <!-- SSL Alert -->
+  <!-- SSL Alert
+  <div class="container">
     <div class="alert alert-success fade" id="sslAlert">
 	  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-	  <strong>Warning!</strong> Switch to the secure site? <a href="https://<?php print $_SERVER[HTTP_HOST] . $_SERVER[REQUEST_URI] ?>" class="alert-link">Yes</a>
+		Switch to the secure site? <a href="https://<?php print $_SERVER[HTTP_HOST] . $_SERVER[REQUEST_URI] ?>" class="alert-link">Yes</a>&nbsp;
+                                           <a href="https://<?php print $_SERVER[HTTP_HOST] . $_SERVER[REQUEST_URI] ?>" class="alert-link">No</a>
     </div>
+  </div>  -->
 
     <!-- Static navbar -->
     <div class="navbar navbar-default navbar-static-top" role="navigation">

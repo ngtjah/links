@@ -180,22 +180,26 @@ body {
 
 /* SSL Alert */
 .fade {
-    display: none;
+    height: 0;
+    overflow: hidden;
     opacity: 0;
-    -webkit-transition: opacity 0.15s linear;
-    -moz-transition: opacity 0.15s linear;
-    -o-transition: opacity 0.15s linear;
-    transition: opacity 0.15s linear;
+    -webkit-transition: opacity 0.45s linear;
+    -moz-transition: opacity 0.45s linear;
+    -o-transition: opacity 0.45s linear;
+    transition: opacity 0.45s linear;
 }
 
 .fade.in {
-    display: inherit;
+    height: auto;
     opacity: 1;
+    padding: 5px;
+    margin-bottom: 5px;
+    border: 4px solid transparent;
 }
 
 .alert {
-  padding: 5px;
-  margin-bottom: 5px;
-  border: 1px solid transparent;
-  border-radius: 4px;
+ padding: 0px;
+ margin-bottom: 0px;
+ border: 0px solid transparent;
+ border-radius: 4px;
 }
