@@ -233,12 +233,12 @@ if ($list == "entire") {
 
           <div class="btn-toolbar nav navbar-nav btn-group-md pull-right">
             
-              <a href="vids.php?newer=<?php echo $newestid . '&search=' . urlencode($partialurl); ?>">
+              <a href="index.php?newer=<?php echo $newestid . '&search=' . urlencode($partialurl); ?>">
                 <button type="button" class="btn btn-default prev navbar-btn">
                   <i class="glyphicon glyphicon-chevron-left"></i>
                 </button>
               </a>
-              <a href="vids.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
+              <a href="index.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
                 <button type="button" class="btn btn-primary next navbar-btn">
                   <i class="glyphicon glyphicon-chevron-right"></i>
                 </button>
