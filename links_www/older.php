@@ -72,9 +72,9 @@ if ($list == "entire") {
 
 	ob_start(); // Start output buffering
 
-  #print "<tr> <td> post: </td><td>";
-  #print_r($_POST);
-  #print "</td></tr>\n";
+        #print "<tr> <td> post: </td><td>";
+        #print_r($_POST);
+        #print "</td></tr>\n";
 
 
         for ($i=0; $i<$rows; $i++)

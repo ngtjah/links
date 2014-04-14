@@ -23,7 +23,7 @@ window.setTimeout(function () {
 
 }, 10000);
 
-$(".alert").alert()
+//$(".alert").alert()
 
 // Fade the Menu Dropdown
 $(function() {
