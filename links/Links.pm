@@ -139,7 +139,7 @@ sub get_remote_server_mimetype {
     my $self = shift;
 
     #Setup the UserAgent
-    my $ua = new LWP::UserAgent(timeout=>15);
+    my $ua = new LWP::UserAgent(agent=>$ConfigLinks::browser_agent,timeout=>60);
        #$ua->show_progress(1);
 
     #Lets get the MIME Type from the Headers
@@ -305,7 +305,7 @@ sub download_image {
     print "Attempting to Download $self->{'www_img'} IMG file to Path: $self->{'full_path'} \n" if $main::debug;
 
     #Setup the UserAgent
-    my $ua = new LWP::UserAgent(timeout=>15);
+    my $ua = new LWP::UserAgent(agent=>$ConfigLinks::browser_agent,timeout=>60);
 
     #Go GET the img file
     my $req = new HTTP::Request 'GET', $self->{'www_img'};
@@ -572,8 +572,7 @@ sub get_title {
 
     $self = shift;
 
-    my $ua = new LWP::UserAgent;
-       $ua->timeout(60);
+    my $ua = new LWP::UserAgent(agent=>$ConfigLinks::browser_agent,timeout=>60);
 
     #Go GET the webpage
     my $res = $ua->get( $self->{'www_url'} );

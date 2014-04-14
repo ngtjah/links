@@ -70,11 +70,11 @@ function db_query($conn) {
 
     } elseif ($newer == 0 && $older != 0) {
 
-    $sql = "SELECT  site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, title, category, id from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl') and edate <= (select edate from links where id = $older) $RemoveThumbsSQL $RemoveEmbedSQL order by edate desc, id desc limit $myMaxResults ";
+    $sql = "SELECT  site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, title, category, id from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl') and edate < (select edate from links where id = $older) $RemoveThumbsSQL $RemoveEmbedSQL order by edate desc, id desc limit $myMaxResults ";
 
   } else {
 
-    $sql = "SELECT  site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, title, category, id from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl') and edate >= (select edate from links where id = $newer) $RemoveThumbsSQL $RemoveEmbedSQL order by edate asc, id asc limit $myMaxResults ";
+    $sql = "SELECT  site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, title, category, id from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl') and edate > (select edate from links where id = $newer) $RemoveThumbsSQL $RemoveEmbedSQL order by edate asc, id asc limit $myMaxResults ";
 
   }
 

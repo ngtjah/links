@@ -66,5 +66,7 @@ our $aws_access_key_id     = "";
 our $aws_secret_access_key = "";
 our $aws_bucket 	   = "";
 
+# Browser Agent
+our $browser_agent = "Mozilla/5.0";
 
 1;

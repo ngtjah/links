@@ -48,19 +48,22 @@ include('functions/functions.index.php');
 	#Search POST and URL vars
 	$partialurl = isset($_POST["partialurl"]) ? "%" . $_POST["partialurl"] . "%" : '%';
 	$newer = isset($_GET["newer"]) ? $_GET["newer"] : '0';
-	$older = isset($_GET["older"]) ? $_GET["older"] : '0';
+	
+        $older = isset($_POST["older"]) ? $_GET["older"] : '0';
+	$older = isset($_GET["older"]) ? $_GET["older"] : $older;
 	
 	
-	#Max Results Dropdown POST and Cookies
-	if ( isset( $_POST[ 'MaxResultsPost' ] ) ) {
-	  $myMaxResults = $_POST[ 'MaxResultsPost' ];
-	  setcookie("LinksMaxResults", $myMaxResults, time()+(60*60*24*365), "/");
-	} elseif (isset($_COOKIE['LinksMaxResults'])){
-	  $myMaxResults = $_COOKIE["LinksMaxResults"];
-	} else {
-	  $myMaxResults = "50";
-	}
-	
+	##Max Results Dropdown POST and Cookies
+	#if ( isset( $_POST[ 'MaxResultsPost' ] ) ) {
+	#  $myMaxResults = $_POST[ 'MaxResultsPost' ];
+	#  setcookie("LinksMaxResults", $myMaxResults, time()+(60*60*24*365), "/");
+	#} elseif (isset($_COOKIE['LinksMaxResults'])){
+	#  $myMaxResults = $_COOKIE["LinksMaxResults"];
+	#} else {
+	#  $myMaxResults = "50";
+	#}
+
+	$myMaxResults = "25";
 	
 	#Settings
 	$myHideCachedImgs = isset($_COOKIE['HideCachedImgs']) ? $_COOKIE["HideCachedImgs"] : 0;
@@ -206,7 +209,7 @@ if ($list == "entire") {
                 <button type="button" class="btn btn-default prev navbar-btn">
                   <i class="glyphicon glyphicon-chevron-left"></i>
                 </button></a>
-              <a href="index.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
+              <a id="older" data-val="<?php echo $oldestid ?>" href="index.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
                 <button type="button" class="btn btn-primary next navbar-btn">
                   <i class="glyphicon glyphicon-chevron-right"></i>
                 </button>
@@ -221,8 +224,7 @@ if ($list == "entire") {
            	  <button type="submit" class="btn btn-default hidden">Submit</button>
            	</form> 
            </div>
-
-           <div class="nav navbar-nav">
+           <!-- <div class="nav navbar-nav">
                <form class="navbar-form" name="myform1" action="index.php" method="POST">
                  <div class="form-group">Results: 
 		   <select class="form-control" name="MaxResultsPost" onchange="resubmit_all()">
@@ -245,7 +247,7 @@ if ($list == "entire") {
                   </select>
                  </div>
                </form>
-           </div>
+           </div> -->
           </div> <!-- /.pull-right -->
 
         </div> <!--/.nav-collapse -->
@@ -258,20 +260,22 @@ if ($list == "entire") {
 
     <div class="container container-main">
 
-<div class="table-responsive">
-
-<table class="table table-condensed">
-
-<?php
-     for ($i=0; $i<$rows; $i++)
-        db_display($i);
-
-?>
-
-</table>
-
-
-</table> <!-- /table responsive -->
+        <div id="content" class="table-responsive">
+        
+            <table id="contenttable" class="table table-condensed">
+            
+            <?php
+                 for ($i=0; $i<$rows; $i++)
+                    db_display($i);
+            
+            ?>
+            
+            </table>
+        
+        </div> <!-- /div table-responsive -->
+        
+        <div class="loading" id="loading">Loading please wait...</div>  
+        <div class="loading" id="nomoreresults">Sorry, no more results to display.</div>
 
     </div> <!-- /container -->
 
@@ -283,6 +287,7 @@ if ($list == "entire") {
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="dist/js/bootstrap.min.js"></script>
     <script src="js/getBadges.ajax.js"></script>
+    <script src="js/scroll.ajax.js"></script>
     <script src="js/ngtr.js"></script>
   </body>
 </html>
