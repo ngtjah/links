@@ -112,8 +112,8 @@ function db_query($conn) {
 	$totalurls = $i;
 
 
-	if ($totalurls == 0)
-		die("No entries found.<BR>");
+	#if ($totalurls == 0)
+	#	die("No entries found.<BR>");
 
 	return array ($rows, $dates, $announcers, $urls, $types, $totalurls, $filenames, $titles, $categories, $thisID);
 }

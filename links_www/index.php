@@ -275,7 +275,7 @@ if ($list == "entire") {
         </div> <!-- /div table-responsive -->
         
         <div class="loading" id="loading">Loading please wait...</div>  
-        <div class="loading" id="nomoreresults">Sorry, no more results to display.</div>
+        <div class="loading" id="nomoreresults">Out of Results</div>
 
     </div> <!-- /container -->
 

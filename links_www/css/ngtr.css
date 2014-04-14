@@ -204,3 +204,14 @@ body {
  border-radius: 4px;
 }
 
+.loading {
+        background:#428bca;
+        color:white;
+        font-size:20px;
+        padding:5px 10px;
+        text-align:center;
+        width:450px;
+        margin:0px auto;
+        display:none;
+        border-radius: 5px;
+}

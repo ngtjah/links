@@ -14,7 +14,9 @@ function element_in_scroll(elem)
 
 $(function(){
     var scrollFunction = function(e){
+	var mycount = 1;
         if (element_in_scroll("#contenttable tr:last")) {
+	        $('#loading').show();
                 $(window).unbind('scroll');
                 $.ajax({
                     type: "POST",
@@ -24,25 +26,34 @@ $(function(){
                     data: { partialurl:$('input[name=partialurl]').attr('value'), older:$('#older').data('val'),json: "true" },
                     success: function( msg ){
 			//$('#older').data('val',msg.olderid);
-			$(window).scroll(scrollFunction);
+
                     }
                 }).done(function( msg ) {
                     //$("#contenttable tbody").append(msg.results).hide().fadeIn(999);
-		    $(msg.results).hide().appendTo("#contenttable tbody").fadeIn(1000);
-		    $('#older').data('val',msg.olderid);
 
-                    if (msg.results.count != 0) {
-                        $(window).scroll(function(e){
-			    //Query the jQuery object for the values
-			    //var msgindex = $msg.filter('#olderResult').text();
-                            //scroll_element_ajax();
-    			    //alert($('#older').data('val'));
-                        })
-                    }
+                    if (msg.results.length > 0) {
+
+		        $('#loading').hide();
+		        $(msg.results).hide().appendTo("#contenttable tbody").fadeIn(1000);
+		        $('#older').data('val',msg.olderid);
+			$(window).scroll(scrollFunction);
+
+
+                    } else {
+
+		        $('#loading').hide();
+		        $('#nomoreresults').show();
+
+		    }
+
+		    mycount = mycount + 1;
+
                 });
             };
     };
+
 $(window).scroll(scrollFunction);
+
 });
 
 
