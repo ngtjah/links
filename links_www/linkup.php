@@ -126,6 +126,7 @@ if ($list == "entire") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="referrer" content="never">
     <link rel="shortcut icon" href="favicon.ico">
 
     <title><?php echo $site_title; ?></title>

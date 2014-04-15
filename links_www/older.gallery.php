@@ -65,11 +65,6 @@ if ($list == "entire") {
 	$myUtubeSQL = ($mynoAddUtube == "on") ? "OR site like '%youtube.com%' OR site like '%vimeo.com%'" : "";
 	
 	
-	
-	#Search Stuff
-	if (isset( $_GET["search"] ))
-	   $partialurl = urldecode($_GET["search"]);
-	
 	$partialurl_clean = preg_replace('/^\%/', '', $partialurl);
 	$partialurl_clean = preg_replace('/\%$/', '', $partialurl_clean);
 

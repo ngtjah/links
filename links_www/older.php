@@ -47,11 +47,7 @@ if ($list == "entire") {
         $RemoveThumbsSQL = ($myHideCachedImgs == 1) ? "and filename is null " : "";
         $RemoveEmbedSQL = ($myHideEmbed == 1) ? "and site not like '%youtube.com%' and site not like '%vimeo.com%'" : "";
 
-	#Search Stuff
-	if ( isset( $_GET["search"] ) ) {
-	  $partialurl = urldecode($_GET["search"]);
-	}
-	
+
 	$partialurl_clean = preg_replace('/^\%/', '', $partialurl);
 	$partialurl_clean = preg_replace('/\%$/', '', $partialurl_clean);
 
