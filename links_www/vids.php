@@ -180,7 +180,7 @@ if ($list == "entire") {
                 <button type="button" class="btn btn-default prev navbar-btn">
                   <i class="glyphicon glyphicon-chevron-left"></i>
                 </button></a>
-              <a data-val="<?php echo $oldestid ?>" href="vids.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
+              <a href="vids.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
                 <button type="button" class="btn btn-primary next navbar-btn">
                   <i class="glyphicon glyphicon-chevron-right"></i>
                 </button>

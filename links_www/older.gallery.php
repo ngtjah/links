@@ -101,9 +101,9 @@ if ($list == "entire") {
 
 	ob_start(); // Start output buffering
 
-        print "<div class=\"thumb\"> post: ";
-        print_r($_POST);
-        print "</div>\n";
+        #print "<div class=\"thumb\"> post: ";
+        #print_r($_POST);
+        #print "</div>\n";
 
 	for ($i=0; $i<$rows; $i++) {
 
