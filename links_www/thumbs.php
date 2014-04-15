@@ -37,18 +37,12 @@ if ($list != "NoPasswd") {
 	#Search POST and URL vars
 	$partialurl = isset($_POST["partialurl"]) ? "%" . $_POST["partialurl"] . "%" : '%';
 	$newer = isset($_GET["newer"]) ? $_GET["newer"] : 0;
-	$older = isset($_GET["older"]) ? $_GET["older"] : 0;
+
+        $older = isset($_POST["older"]) ? $_GET["older"] : '0';
+        $older = isset($_GET["older"]) ? $_GET["older"] : $older;
+
 	
-	#Dropdown POST and Cookies
-	if ( isset( $_POST[ 'MaxResultsPost' ] ) ) {
-		$myMaxResults = $_POST[ 'MaxResultsPost' ];
-		setcookie("ThumbsMaxResults", $myMaxResults, time()+(60*60*24*365), "/");
-	} elseif (isset($_COOKIE['ThumbsMaxResults'])){
-		$myMaxResults = $_COOKIE["ThumbsMaxResults"];
-	} else {
-		$myMaxResults = "25";
-	}
-	
+	$myMaxResults = "25";
 	
 	#Settings
 	$myHideCachedImgs = isset($_COOKIE['HideCachedImgs']) ? $_COOKIE["HideCachedImgs"] : 0;
@@ -203,7 +197,7 @@ if ($list == "entire") {
                 <button type="button" class="btn btn-default prev navbar-btn">
                   <i class="glyphicon glyphicon-chevron-left"></i>
                 </button></a>
-              <a href="thumbs.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
+              <a id="older" data-val="<?php echo $oldestid ?>" href="thumbs.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
                 <button type="button" class="btn btn-primary next navbar-btn">
                   <i class="glyphicon glyphicon-chevron-right"></i>
                 </button>
@@ -211,7 +205,7 @@ if ($list == "entire") {
            </div> <!--/.btn-toolbar -->
 
            <div class="nav navbar-nav">
-           	<form class="navbar-form" role="search" method="POST" name="myform" action="index.php">
+           	<form class="navbar-form" role="search" method="POST" name="myform" action="thumbs.php">
            	  <div class="form-group">
            	    <input type="text" class="form-control" placeholder="Search" name="partialurl" value="<?php echo $partialurl_clean; ?>">
            	  </div>
@@ -219,50 +213,12 @@ if ($list == "entire") {
            	</form> 
            </div>
 
-           <div class="nav navbar-nav">
-               <form class="navbar-form" name="myform1" action="index.php" method="POST">
-                 <div class="form-group">Results: 
-		   <select class="form-control" name="MaxResultsPost" onchange="resubmit_all()">
-			<?php
-			      $myMaxResultsarray = array(25, 50, 75, 100, 200);
-			
-			  foreach ($myMaxResultsarray as $i => $value)
-			    {
-			      $thismaxresults = $myMaxResultsarray[$i];
-			      if ( $thismaxresults == $myMaxResults )
-				{
-				  print( "<option selected>$thismaxresults</option>\n" );
-				}
-			      else
-				{
-				  print( "<option>$thismaxresults</option>\n" );
-				}
-			    }
-                      ?>
-                  </select>
-                 </div>
-               </form>
-           </div>
           </div> <!-- /.pull-right -->
 
         </div> <!--/.nav-collapse -->
 
       </div> <!--/.container -->
      </div> <!--/.END Fixed navbar -->
-
-	<!-- <div class="navbar-fixed-bottom">
-	   <div class="container">
-
-	      <ul class="pager">
-		      <li class="previous"><a href="thumbs.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">&larr; Older</a></li>
-		      <?php if(isset($_GET['newer']) || isset($_GET['older']))
-			    echo '<li class="next"><a href="thumbs.php?newer=' . $newestid . '&search=' . urlencode($partialurl) . '">Newer &rarr;</a></li>';
-                      ?>
-	      </ul>
-	
-	   </div> <!-- container -->
-	</div> <!-- navbar fixed for arrows -->
-
 
 	<!-- The Bootstrap Image Gallery lightbox, should be a child element of the document body -->
 	<div id="blueimp-gallery" class="blueimp-gallery">
@@ -314,17 +270,18 @@ if ($list == "entire") {
 
 			<?php
 			
-			#$total_width = 1;
-			
 			for ($i=0; $i<$rows; $i++) {
 			
-				db_display($i);
+			    db_display($i);
 			
 			}
 			
 			?>
 
 		</div> <!-- /links -->
+
+        <div class="loading" id="loading">Loading please wait...</div>
+        <div class="loading" id="nomoreresults">Out of Results</div>
 	
 	</div <!-- /container -->
 
@@ -334,16 +291,15 @@ if ($list == "entire") {
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="dist/js/bootstrap.min.js"></script>
+
     <script src="js/getBadges.ajax.js"></script>
     <script src="js/ngtr.gallery.js"></script>
 
+     <!-- Bootstrap Image Gallery -->
+     <script src="gallery/js/jquery.blueimp-gallery.min.js"></script>
+     <script src="js/bootstrap-image-gallery.min.js"></script>
 
-   <!-- Bootstrap Image Gallery -->
-   <script src="gallery/js/jquery.blueimp-gallery.min.js"></script>
-   <script src="js/bootstrap-image-gallery.min.js"></script>
-
-
-
+     <script src="js/scroll.gallery.js"></script>
 
 
   </body>

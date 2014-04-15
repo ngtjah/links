@@ -33,18 +33,12 @@ if ($list != "NoPasswd") {
 	#Search POST and URL vars	
 	$partialurl = isset($_POST["partialurl"]) ? "%" . $_POST["partialurl"] . "%" : '%';
 	$newer = isset($_GET["newer"]) ? $_GET["newer"] : '0';
-	$older = isset($_GET["older"]) ? $_GET["older"] : '0';
 	
+        $older = isset($_POST["older"]) ? $_GET["older"] : '0';
+        $older = isset($_GET["older"]) ? $_GET["older"] : $older;
 	
-	#Max Results Dropdown POST and Cookies
-	if ( isset( $_POST[ 'MaxResultsPost' ] ) ) {
-		$myMaxResults = $_POST[ 'MaxResultsPost' ];
-		setcookie("VidsMaxResults", $myMaxResults, time()+(60*60*24*365), "/");
-	} elseif (isset($_COOKIE['VidsMaxResults'])){
-		$myMaxResults = $_COOKIE["VidsMaxResults"];
-	} else {
-		$myMaxResults = "25";
-	}
+
+	$myMaxResults = "25";
 	
 	
 	#Settings
@@ -66,20 +60,14 @@ if ($list != "NoPasswd") {
 	$partialurl_clean = preg_replace('/^\%/', '', $partialurl);
 	$partialurl_clean = preg_replace('/\%$/', '', $partialurl_clean);
 	
-	#if ($startdate > $enddate)
-	#	die("Start date is greater than enddate<BR>");
 	
-	  $conn = db_connect();
-	  list ($rows, $myid, $dates, $announcers, $urls, $types, $totalurls, $filenames, $twidths, $theights, $titles) = db_query_vids($conn);
+	$conn = db_connect();
+        list ($rows, $myid, $dates, $announcers, $urls, $types, $totalurls, $filenames, $twidths, $theights, $titles) = db_query_vids($conn);
 	
-	  #if ($myHideRandomImg == 0) {
-	  #  list ($myid_rand, $announcers_rand, $urls_rand, $filenames_rand, $twidths_rand, $theights_rand) = db_query_rand($conn);
-	  #}
 	
 	#Prev/Next
 	$oldestid = end($myid);
 	$newestid = $myid[0];
-	
 	
 	
 	/* Last Date Tracker */
@@ -199,7 +187,7 @@ if ($list == "entire") {
                 <button type="button" class="btn btn-default prev navbar-btn">
                   <i class="glyphicon glyphicon-chevron-left"></i>
                 </button></a>
-              <a href="vids.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
+              <a id="older" data-val="<?php echo $oldestid ?>" href="vids.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
                 <button type="button" class="btn btn-primary next navbar-btn">
                   <i class="glyphicon glyphicon-chevron-right"></i>
                 </button>
@@ -207,7 +195,7 @@ if ($list == "entire") {
            </div> <!--/.btn-toolbar -->
 
            <div class="nav navbar-nav">
-           	<form class="navbar-form" role="search" method="POST" name="myform" action="index.php">
+           	<form class="navbar-form" role="search" method="POST" name="myform" action="vids.php">
            	  <div class="form-group">
            	    <input type="text" class="form-control" placeholder="Search" name="partialurl" value="<?php echo $partialurl_clean; ?>">
            	  </div>
@@ -215,49 +203,12 @@ if ($list == "entire") {
            	</form> 
            </div>
 
-           <div class="nav navbar-nav">
-               <form class="navbar-form" name="myform1" action="index.php" method="POST">
-                 <div class="form-group">Results: 
-		   <select class="form-control" name="MaxResultsPost" onchange="resubmit_all()">
-			<?php
-			      $myMaxResultsarray = array(25, 50, 75, 100, 200);
-			
-			  foreach ($myMaxResultsarray as $i => $value)
-			    {
-			      $thismaxresults = $myMaxResultsarray[$i];
-			      if ( $thismaxresults == $myMaxResults )
-				{
-				  print( "<option selected>$thismaxresults</option>\n" );
-				}
-			      else
-				{
-				  print( "<option>$thismaxresults</option>\n" );
-				}
-			    }
-                      ?>
-                  </select>
-                 </div>
-               </form>
-           </div>
           </div> <!-- /.pull-right -->
 
         </div> <!--/.nav-collapse -->
 
       </div> <!--/.container -->
      </div> <!--/.END Fixed navbar -->
-
-	<!-- <div class="navbar-fixed-bottom">
-	   <div class="container">
-
-	      <ul class="pager">
-		      <li class="previous"><a href="vids.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">&larr; Older</a></li>
-		      <?php if(isset($_GET['newer']) || isset($_GET['older']))
-			    echo '<li class="next"><a href="vids.php?newer=' . $newestid . '&search=' . urlencode($partialurl) . '">Newer &rarr;</a></li>';
-                      ?>
-	      </ul>
-	
-	   </div> <!-- container -->
-	</div> <!-- navbar fixed for arrows -->
 
 
 	<!-- The Bootstrap Image Gallery lightbox, should be a child element of the document body -->
@@ -316,6 +267,9 @@ if ($list == "entire") {
 			?>
 
 		</div> <!-- /links -->
+
+        <div class="loading" id="loading">Loading please wait...</div>
+        <div class="loading" id="nomoreresults">Out of Results</div>
 	
 	</div <!-- /container -->
 
@@ -325,16 +279,15 @@ if ($list == "entire") {
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="dist/js/bootstrap.min.js"></script>
+
     <script src="js/getBadges.ajax.js"></script>
     <script src="js/ngtr.gallery.js"></script>
 
-
-   <!-- Bootstrap Image Gallery -->
-   <script src="gallery/js/jquery.blueimp-gallery.min.js"></script>
-   <script src="js/bootstrap-image-gallery.min.js"></script>
-
-
-
+    <!-- Bootstrap Image Gallery -->
+    <script src="gallery/js/jquery.blueimp-gallery.min.js"></script>
+    <script src="js/bootstrap-image-gallery.min.js"></script>
+    
+    <script src="js/scroll.gallery.js"></script>
 
 
   </body>

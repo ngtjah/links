@@ -47,6 +47,16 @@ if ($list == "entire") {
 	  $myMaxResults = "50";
 	}
 
+        $myMaxResults = "50";
+
+        #Settings
+        $myHideCachedImgs = isset($_COOKIE['HideCachedImgs']) ? $_COOKIE["HideCachedImgs"] : 0;
+
+        $myHideEmbed = isset($_COOKIE['HideEmbed']) ? $_COOKIE["HideEmbed"] : 0;
+
+        $RemoveThumbsSQL = ($myHideCachedImgs == 1) ? "and filename is null " : "";
+        $RemoveEmbedSQL = ($myHideEmbed == 1) ? "and site not like '%youtube.com%' and site not like '%vimeo.com%'" : "";
+
 	#Search Stuff
 	if ( isset( $_GET["search"] ) ) {
 	  $partialurl = urldecode($_GET["search"]);

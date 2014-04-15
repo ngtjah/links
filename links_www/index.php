@@ -63,7 +63,7 @@ include('functions/functions.index.php');
 	#  $myMaxResults = "50";
 	#}
 
-	$myMaxResults = "25";
+	$myMaxResults = "50";
 	
 	#Settings
 	$myHideCachedImgs = isset($_COOKIE['HideCachedImgs']) ? $_COOKIE["HideCachedImgs"] : 0;

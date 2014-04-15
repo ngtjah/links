@@ -89,11 +89,11 @@ function db_query_vids($conn) {
 
 	} elseif ($newer == "0" && $older != "0") {
 
-		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' ) and edate <= (select edate from links where id = $older) order by edate desc, id desc limit $myMaxResults ";
+		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' ) and edate < (select edate from links where id = $older) order by edate desc, id desc limit $myMaxResults ";
 
 	} else {
 
-		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' ) and edate >= (select edate from links where id = $newer) order by edate asc, id asc limit $myMaxResults ";
+		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' ) and edate > (select edate from links where id = $newer) order by edate asc, id asc limit $myMaxResults ";
 
 	}
 
@@ -131,8 +131,8 @@ function db_query_vids($conn) {
 
 	$totalurls = $i;
 
-	if ($totalurls == 0)
-		die("No entries found.<BR>");
+	#if ($totalurls == 0)
+	#	die("No entries found.<BR>");
 
 	return array ($rows, $myid, $dates, $announcers, $urls, $types, $totalurls, $filenames, $twidths, $theights, $titles);
 }
@@ -150,11 +150,11 @@ function db_query_thumbs($conn) {
 
 	} elseif ($newer == 0 && $older != 0) {
 
-		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( filename is not null $myUtubeSQL ) and edate <= (select edate from links where id = $older) order by edate desc, id desc limit $myMaxResults ";
+		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( filename is not null $myUtubeSQL ) and edate < (select edate from links where id = $older) order by edate desc, id desc limit $myMaxResults ";
 
 	} else {
 
-		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( filename is not null $myUtubeSQL ) and edate >= (select edate from links where id = $newer) order by edate asc, id asc limit $myMaxResults ";
+		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( filename is not null $myUtubeSQL ) and edate > (select edate from links where id = $newer) order by edate asc, id asc limit $myMaxResults ";
 
 	}
 
@@ -192,8 +192,8 @@ function db_query_thumbs($conn) {
 
 	$totalurls = $i;
 
-	if ($totalurls == 0)
-		die("No entries found.<BR>");
+	#if ($totalurls == 0)
+	#	die("No entries found.<BR>");
 
 	return array ($rows, $myid, $dates, $announcers, $urls, $types, $totalurls, $filenames, $twidths, $theights, $titles);
 }
