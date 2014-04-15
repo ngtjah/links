@@ -142,15 +142,6 @@ if ($list == "entire") {
     <!-- Custom styles for this template -->
     <link href="css/ngtr.css" rel="stylesheet">
 
-    <script language="JavaScript">
-       function resubmit_all()
-       {
-         document.myform1.action="thumbs.php?<?php echo $_SERVER['QUERY_STRING'] ?>";
-         document.myform1.submit();
-       }
-    </script>
-
-
     <!-- Just for debugging purposes. Don''t actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
@@ -280,8 +271,8 @@ if ($list == "entire") {
 
 		</div> <!-- /links -->
 
-        <div class="loading" id="loading">Loading please wait...</div>
-        <div class="loading" id="nomoreresults">Out of Results</div>
+                <div class="loading" id="loading">Loading please wait...</div>
+                <div class="loading" id="nomoreresults">Out of Results</div>
 	
 	</div <!-- /container -->
 

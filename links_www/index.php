@@ -53,16 +53,6 @@ include('functions/functions.index.php');
 	$older = isset($_GET["older"]) ? $_GET["older"] : $older;
 	
 	
-	##Max Results Dropdown POST and Cookies
-	#if ( isset( $_POST[ 'MaxResultsPost' ] ) ) {
-	#  $myMaxResults = $_POST[ 'MaxResultsPost' ];
-	#  setcookie("LinksMaxResults", $myMaxResults, time()+(60*60*24*365), "/");
-	#} elseif (isset($_COOKIE['LinksMaxResults'])){
-	#  $myMaxResults = $_COOKIE["LinksMaxResults"];
-	#} else {
-	#  $myMaxResults = "50";
-	#}
-
 	$myMaxResults = "50";
 	
 	#Settings
@@ -145,14 +135,6 @@ if ($list == "entire") {
 
     <!-- Custom styles for this template -->
     <link href="css/ngtr.css" rel="stylesheet">
-
-        <script language="JavaScript">
-	    function resubmit_all()
-	    {
-	      document.myform1.action="index.php?<?php echo $_SERVER['QUERY_STRING'] ?>";
-	      document.myform1.submit();
-	    }
-        </script>
 
     <!-- Just for debugging purposes. Don''t actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
