@@ -48,11 +48,8 @@ if ($list == "entire") {
         $RemoveEmbedSQL = ($myHideEmbed == 1) ? "and site not like '%youtube.com%' and site not like '%vimeo.com%'" : "";
 
 
-	$partialurl_clean = preg_replace('/^\%/', '', $partialurl);
-	$partialurl_clean = preg_replace('/\%$/', '', $partialurl_clean);
-
-
 	$conn = db_connect();
+
 	list($rows, $dates, $announcers, $urls, $types, $totalurls, $filenames, $titles, $categories, $thisID) = db_query($conn);
 
 

@@ -41,16 +41,6 @@ if ($list == "entire") {
         $older = isset($_POST["older"]) ? $_POST["older"] : '0';
         $older = isset($_GET["older"]) ? $_GET["older"] : $older;
 	
-	#Dropdown POST and Cookies
-	if ( isset( $_POST[ 'MaxResultsPost' ] ) ) {
-		$myMaxResults = $_POST[ 'MaxResultsPost' ];
-		setcookie("ThumbsMaxResults", $myMaxResults, time()+(60*60*24*365), "/");
-	} elseif (isset($_COOKIE['ThumbsMaxResults'])){
-		$myMaxResults = $_COOKIE["ThumbsMaxResults"];
-	} else {
-		$myMaxResults = "25";
-	}
-	
 	$myMaxResults = "25";
 	
 	#Settings
@@ -65,13 +55,10 @@ if ($list == "entire") {
 	$myUtubeSQL = ($mynoAddUtube == "on") ? "OR site like '%youtube.com%' OR site like '%vimeo.com%'" : "";
 	
 	
-	$partialurl_clean = preg_replace('/^\%/', '', $partialurl);
-	$partialurl_clean = preg_replace('/\%$/', '', $partialurl_clean);
-
         #Page Name
         if (isset( $_GET["p"] ))
 	  $p = urldecode($_GET["p"]);
-	
+
 	
         $conn = db_connect();
 
