@@ -83,11 +83,11 @@ function db_query_vids($conn) {
 
   global $http, $ftp, $announcer, $partialurl, $newer, $older, $filename, $myMaxResults, $myUtubeSQL;
 
-	if ( $newer ==  "0" && $older == "0" ) {
+	if ( $newer ==  0 && $older == 0 ) {
 	 
 		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' ) order by edate desc, id desc limit $myMaxResults ";
 
-	} elseif ($newer == "0" && $older != "0") {
+	} elseif ($newer == 0 && $older != 0) {
 
 		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' ) and edate < (select edate from links where id = $older) order by edate desc, id desc limit $myMaxResults ";
 

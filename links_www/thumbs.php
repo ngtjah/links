@@ -38,7 +38,7 @@ if ($list != "NoPasswd") {
 	$partialurl = isset($_POST["partialurl"]) ? "%" . $_POST["partialurl"] . "%" : '%';
 	$newer = isset($_GET["newer"]) ? $_GET["newer"] : 0;
 
-        $older = isset($_POST["older"]) ? $_GET["older"] : '0';
+        $older = isset($_POST["older"]) ? $_POST["older"] : '0';
         $older = isset($_GET["older"]) ? $_GET["older"] : $older;
 
 	
@@ -68,9 +68,6 @@ if ($list != "NoPasswd") {
 	  $conn = db_connect();
 	  list ($rows, $myid, $dates, $announcers, $urls, $types, $totalurls, $filenames, $twidths, $theights, $titles) = db_query_thumbs($conn);
 	
-	  #if ($myHideRandomImg == 0) {
-	  #  list ($myid_rand, $announcers_rand, $urls_rand, $filenames_rand, $twidths_rand, $theights_rand) = db_query_rand($conn);
-	  #}
 	
 	#Prev/Next
 	$oldestid = end($myid);
@@ -190,7 +187,7 @@ if ($list == "entire") {
                 <button type="button" class="btn btn-default prev navbar-btn">
                   <i class="glyphicon glyphicon-chevron-left"></i>
                 </button></a>
-              <a id="older" data-val="<?php echo $oldestid ?>" href="thumbs.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
+              <a data-val="<?php echo $oldestid ?>" href="thumbs.php?older=<?php echo $oldestid . "&search=" . urlencode($partialurl); ?>">
                 <button type="button" class="btn btn-primary next navbar-btn">
                   <i class="glyphicon glyphicon-chevron-right"></i>
                 </button>
@@ -278,6 +275,9 @@ if ($list == "entire") {
                 <div class="loading" id="nomoreresults">Out of Results</div>
 	
 	</div <!-- /container -->
+
+    <!-- Hidden Var -->
+    <input type="hidden" id="older" data-val="<?php echo $oldestid; ?>" />
 
 
     <!-- Bootstrap core JavaScript
