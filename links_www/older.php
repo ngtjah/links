@@ -37,16 +37,6 @@ if ($list == "entire") {
         $older = isset($_POST["older"]) ? $_POST["older"] : '0';
 	$older = isset($_GET["older"]) ? $_GET["older"] : $older;
 
-	#Max Results Dropdown POST and Cookies
-	if ( isset( $_POST[ 'MaxResultsPost' ] ) ) {
-	  $myMaxResults = $_POST[ 'MaxResultsPost' ];
-	  setcookie("LinksMaxResults", $myMaxResults, time()+(60*60*24*365), "/");
-	} elseif (isset($_COOKIE['LinksMaxResults'])){
-	  $myMaxResults = $_COOKIE["LinksMaxResults"];
-	} else {
-	  $myMaxResults = "50";
-	}
-
         $myMaxResults = "50";
 
         #Settings
@@ -74,11 +64,7 @@ if ($list == "entire") {
 	$oldestid = end($thisID);
 	$newestid = $thisID[0];
 
-#	print "<html>\n";
-
 	$results = "";
-	$vars = "";
-
 
 	ob_start(); // Start output buffering
 
@@ -98,7 +84,6 @@ if ($list == "entire") {
 	
 			 );
 
-#	print "</html>\n";
 
 
 } # $list == entire

@@ -285,6 +285,7 @@ if ($list == "entire") {
 
     <script src="js/getBadges.ajax.js"></script>
     <script src="js/ngtr.gallery.js"></script>
+    <script src="js/ngtr.js"></script>
 
      <!-- Bootstrap Image Gallery -->
      <script src="gallery/js/jquery.blueimp-gallery.min.js"></script>

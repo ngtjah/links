@@ -1,23 +1,23 @@
 body {
-  font-size: 14px;
-  line-height: 1.428571429;
-  color: #333333;
-  background-color: #ffffff;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #333333;
+    background-color: #ffffff;
 }
 
 .container {
-     padding-right: 4px; /*15px in bootstrap.css*/
-     padding-left: 4px;  /*idem*/
-     margin-right: auto;
-     margin-left: auto;
+    padding-right: 4px; /*15px in bootstrap.css*/
+    padding-left: 4px;  /*idem*/
+    margin-right: auto;
+    margin-left: auto;
 }
 
 
 .my-fluid-container {
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-left: auto;
-  margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Nickname column */
@@ -86,7 +86,6 @@ body {
 #    height: 150px;
 }
 
-
 .modal {
     overflow: auto;
     color: #333;
@@ -94,9 +93,9 @@ body {
 
 /* set a max-width for horizontal fluid layout and make it centered */
 .container {
-  margin-right: auto;
-  margin-left: auto;
-  max-width: 1600px; /* or 950px */
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 1600px; /* or 950px */
 
 } 
 
@@ -105,33 +104,32 @@ body {
 
 /* Gallery */
 .thumb {
-  display: inline-block;
-  position: relative;
-  padding-left: 0px;
-  padding-right: 0px;
-  padding-top: 2px;
-  padding-bottom: 1px;
-
-  margin-right: 2px;
-  margin-bottom: 2px; 
-
-  /* margin-left: auto;
-  margin-right: auto;  */
-
-  vertical-align: bottom;
+    display: inline-block;
+    position: relative;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 2px;
+    padding-bottom: 1px;
+  
+    margin-right: 2px;
+    margin-bottom: 2px; 
+  
+    /* 
+    margin-left: auto;
+    margin-right: auto;  
+    */
+  
+    vertical-align: bottom;
 
 }
 
 /* info txt caption */
 .caption {
-
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 2px;
   padding-bottom: 1px;
-
   margin-top: 3px;
-
   border:2px solid #dddddd;
   border-collapse:collapse;
   border-radius: 4px;
@@ -144,7 +142,7 @@ body {
   .blueimp-gallery .modal-dialog {
     right: auto;
     left: auto;
-        width: auto;
+    width: auto;
     max-width: 900px;
     padding-left: 5%;
     padding-right: 5%;
@@ -152,21 +150,21 @@ body {
 }
 
 .blueimp-gallery .modal-body {
-	position: relative;
-	text-align: center;
-	padding: 0 0 56.25% 0;
-	overflow: hidden;
-	cursor: pointer;
+    position: relative;
+    text-align: center;
+    padding: 0 0 56.25% 0;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 
 /* Lightbox Description */
 .blueimp-gallery > .description {
-  position: absolute;
-  top: 30px;
-  left: 15px;
-  color: #fff;
-  display: none;
+    position: absolute;
+    top: 30px;
+    left: 15px;
+    color: #fff;
+    display: none;
 }
 
 .blueimp-gallery-controls > .description {
@@ -175,7 +173,7 @@ body {
 
 /* Center the gallery */
 .links {
-   text-align: center;
+    text-align: center;
 }
 
 /* SSL Alert */
@@ -198,20 +196,20 @@ body {
 }
 
 .alert {
- padding: 0px;
- margin-bottom: 0px;
- border: 0px solid transparent;
- border-radius: 4px;
+    padding: 0px;
+    margin-bottom: 0px;
+    border: 0px solid transparent;
+    border-radius: 4px;
 }
 
 .loading {
-        background:#428bca;
-        color:white;
-        font-size:20px;
-        padding:5px 10px;
-        text-align:center;
-        width:450px;
-        margin:0px auto;
-        display:none;
-        border-radius: 5px;
+    background:#428bca;
+    color:white;
+    font-size:20px;
+    padding:5px 10px;
+    text-align:center;
+    width:450px;
+    margin:0px auto;
+    display:none;
+    border-radius: 5px;
 }

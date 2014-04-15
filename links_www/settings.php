@@ -307,6 +307,7 @@ if ($list == "entire") {
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="dist/js/bootstrap.min.js"></script>
     <script src="js/getBadges.ajax.js"></script>
+    <script src="js/ngtr.js"></script>
 
 
   </body>
