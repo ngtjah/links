@@ -186,7 +186,9 @@ if ($list == "entire") {
           </ul>
 
           <div class="pull-right">
-           <div class="btn-toolbar nav navbar-nav btn-group-md">
+
+           <noscript>
+           <div id="paging-buttons" class="btn-toolbar nav navbar-nav btn-group-md">
               <a href="index.php?newer=<?php echo $newestid . "&search=" . urlencode($partialurl); ?>">
                 <button type="button" class="btn btn-default prev navbar-btn">
                   <i class="glyphicon glyphicon-chevron-left"></i>
@@ -197,6 +199,7 @@ if ($list == "entire") {
                 </button>
               </a>
            </div> <!--/.btn-toolbar -->
+           </noscript>
 
            <div class="nav navbar-nav">
            	<form class="navbar-form" role="search" method="POST" name="myform" action="index.php">
@@ -206,30 +209,7 @@ if ($list == "entire") {
            	  <button type="submit" class="btn btn-default hidden">Submit</button>
            	</form> 
            </div>
-           <!-- <div class="nav navbar-nav">
-               <form class="navbar-form" name="myform1" action="index.php" method="POST">
-                 <div class="form-group">Results: 
-		   <select class="form-control" name="MaxResultsPost" onchange="resubmit_all()">
-			<?php
-			      $myMaxResultsarray = array(25, 50, 75, 100, 200);
-			
-			  foreach ($myMaxResultsarray as $i => $value)
-			    {
-			      $thismaxresults = $myMaxResultsarray[$i];
-			      if ( $thismaxresults == $myMaxResults )
-				{
-				  print( "<option selected>$thismaxresults</option>\n" );
-				}
-			      else
-				{
-				  print( "<option>$thismaxresults</option>\n" );
-				}
-			    }
-                      ?>
-                  </select>
-                 </div>
-               </form>
-           </div> -->
+
           </div> <!-- /.pull-right -->
 
         </div> <!--/.nav-collapse -->

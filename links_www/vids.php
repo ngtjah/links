@@ -173,7 +173,9 @@ if ($list == "entire") {
 
 
           <div class="pull-right">
-           <div class="btn-toolbar nav navbar-nav btn-group-md">
+
+           <noscript>
+           <div id="paging-buttons" class="btn-toolbar nav navbar-nav btn-group-md">
               <a href="vids.php?newer=<?php echo $newestid . "&search=" . urlencode($partialurl); ?>">
                 <button type="button" class="btn btn-default prev navbar-btn">
                   <i class="glyphicon glyphicon-chevron-left"></i>
@@ -184,6 +186,7 @@ if ($list == "entire") {
                 </button>
               </a>
            </div> <!--/.btn-toolbar -->
+           </noscript>
 
            <div class="nav navbar-nav">
            	<form class="navbar-form" role="search" method="POST" name="myform" action="vids.php">
