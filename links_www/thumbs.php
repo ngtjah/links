@@ -46,14 +46,11 @@ if ($list != "NoPasswd") {
 	
 	#Settings
 	$myHideCachedImgs = isset($_COOKIE['HideCachedImgs']) ? $_COOKIE["HideCachedImgs"] : 0;
-	
-	$myHideEmbed = isset($_COOKIE['HideEmbed']) ? $_COOKIE["HideEmbed"] : 0;
-	
-	$mynoInfoTxt = isset($_COOKIE['noInfoTxt']) ? $_COOKIE["noInfoTxt"] : 'on';
-	
-	$mynoAddUtube = isset($_COOKIE['noAddUtube']) ? $_COOKIE["noAddUtube"]: 'off';
-	
-	$myUtubeSQL = ($mynoAddUtube == "on") ? "OR site like '%youtube.com%' OR site like '%vimeo.com%'" : "";
+	$myHideEmbed      = isset($_COOKIE['HideEmbed'])      ? $_COOKIE["HideEmbed"]      : 0;
+	$myGifAutoPlay    = isset($_COOKIE['GifAutoPlay'])    ? $_COOKIE["GifAutoPlay"]    : 0;
+	$mynoInfoTxt      = isset($_COOKIE['noInfoTxt'])      ? $_COOKIE["noInfoTxt"]      : 'on';
+	$mynoAddUtube     = isset($_COOKIE['noAddUtube'])     ? $_COOKIE["noAddUtube"]     : 'off';
+	$myUtubeSQL       = ($mynoAddUtube == "on")           ? "OR site like '%youtube.com%' OR site like '%vimeo.com%'" : "";
 	
 	
 	
@@ -291,11 +288,13 @@ if ($list == "entire") {
     <script src="js/ngtr.gallery.js"></script>
     <script src="js/ngtr.js"></script>
 
-     <!-- Bootstrap Image Gallery -->
-     <script src="gallery/js/jquery.blueimp-gallery.min.js"></script>
-     <script src="js/bootstrap-image-gallery.min.js"></script>
+    <script src="js/freezeframe.js"></script>
 
-     <script src="js/scroll.gallery.js"></script>
+    <!-- Bootstrap Image Gallery -->
+    <script src="gallery/js/jquery.blueimp-gallery.min.js"></script>
+    <script src="js/bootstrap-image-gallery.min.js"></script>
+
+    <script src="js/scroll.thumbs.js"></script>
 
 
   </body>

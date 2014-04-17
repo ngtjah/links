@@ -230,9 +230,10 @@ function db_query_rand($conn) {
 function db_display($id) {
 
   global $myid, $dates, $announcers, $urls, $types, $authorization, $cells_bg, $font_size, $filenames, $twidths, $theights, $titles, 
-                                 $total_width, $myMaxWidth, $myImgHeight, $mynoInfoTxt, $s3Enable, $s3Bucket, $thumbs_folder, $img_path, $img_folder;
+    $total_width, $myMaxWidth, $myImgHeight, $mynoInfoTxt, $s3Enable, $s3Bucket, $thumbs_folder, $img_path, $img_folder, $myGifAutoPlay;
 
     $infotxt = "";
+    $GifAutoPlay       = ($myGifAutoPlay == "on") ? "" : " class=\"freezeframe\" ";
 
     #Set Username
     if($types[$id] == "twitter")
@@ -476,11 +477,11 @@ function db_display($id) {
         
         if (preg_match("/^.*\.svg$/i",$filepath)) {
         
-        echo "<img src=\"$filepath\" class=\"img-responsive img-thumbnail image-ngt\" style=\"height:170px;\"></a>";
+            echo "<img src=\"$filepath\" class=\"img-responsive img-thumbnail image-ngt\" style=\"height:170px;\"></a>";
         
         } else {
         
-        echo "<img src=\"$filepath_thumb\" class=\"img-responsive img-thumbnail image-ngt\"></a>";
+            echo "<img $GifAutoPlay src=\"$filepath_thumb\" class=\"img-responsive img-thumbnail image-ngt\"></a>";
         
         }
 

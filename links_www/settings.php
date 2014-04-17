@@ -79,6 +79,25 @@ if ($list != "NoPasswd") {
 	} else {
 	        $mynoAddUtube = "off";
 	}
+
+
+	if (isset($_POST[ 'submit_settings' ]) ) {
+	
+	  if ( isset($_POST[ 'GifAutoPlayPost' ]) ) {
+	    $myGifAutoPlay = $_POST[ 'GifAutoPlayPost' ];
+	       setcookie("GifAutoPlay", $myGifAutoPlay, time()+(60*60*24*365), "/");
+	    } else {
+	      $myGifAutoPlay = "off";
+	      setcookie("GifAutoPlay", $myGifAutoPlay, time()+(60*60*24*365), "/");
+	
+	    }
+	
+	} elseif (isset($_COOKIE['GifAutoPlay'])){
+	        $myGifAutoPlay = $_COOKIE["GifAutoPlay"];
+	
+	} else {
+	        $myGifAutoPlay = "off";
+	}
 	
 	
 	if (isset($_POST[ 'submit_settings' ]) ) {
@@ -265,6 +284,19 @@ if ($list == "entire") {
                                 }
 
                 ?>   > add vids
+	    </label>
+	  </div>
+
+	  <div class="checkbox">
+	    <label>
+	      <input type="checkbox" name="GifAutoPlayPost"
+                <?php
+			      if ( $myGifAutoPlay == "on" )
+                                {
+				  print( " checked=\"checked\" " );
+                                }
+
+                ?>   > auto-play animated GIFs
 	    </label>
 	  </div>
 

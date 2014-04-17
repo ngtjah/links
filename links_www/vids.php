@@ -284,7 +284,7 @@ if ($list == "entire") {
     <script src="gallery/js/jquery.blueimp-gallery.min.js"></script>
     <script src="js/bootstrap-image-gallery.min.js"></script>
     
-    <script src="js/scroll.gallery.js"></script>
+    <script src="js/scroll.vids.js"></script>
 
 
   </body>
