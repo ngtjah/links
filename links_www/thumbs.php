@@ -47,7 +47,7 @@ if ($list != "NoPasswd") {
 	#Settings
 	$myHideCachedImgs = isset($_COOKIE['HideCachedImgs']) ? $_COOKIE["HideCachedImgs"] : 0;
 	$myHideEmbed      = isset($_COOKIE['HideEmbed'])      ? $_COOKIE["HideEmbed"]      : 0;
-	$myGifAutoPlay    = isset($_COOKIE['GifAutoPlay'])    ? $_COOKIE["GifAutoPlay"]    : 0;
+	$myGifAutoPlay    = isset($_COOKIE['GifAutoPlay'])    ? $_COOKIE["GifAutoPlay"]    : 'off';
 	$mynoInfoTxt      = isset($_COOKIE['noInfoTxt'])      ? $_COOKIE["noInfoTxt"]      : 'on';
 	$mynoAddUtube     = isset($_COOKIE['noAddUtube'])     ? $_COOKIE["noAddUtube"]     : 'off';
 	$myUtubeSQL       = ($mynoAddUtube == "on")           ? "OR site like '%youtube.com%' OR site like '%vimeo.com%'" : "";
