@@ -88,14 +88,30 @@ if ($list != "NoPasswd") {
 	
 	#	if ($lastdatetime < $maxdatetime) {
 		    setcookie("ThumbsLastDate", $maxdate, time()+(60*60*24*365), "/");
-		    $lastdate = $maxdate;
 	#	}
+
+		    if ($mynoAddUtube=='on') {
+
+	               setcookie("UtubeLastDate", $maxdate, time()+(60*60*24*365), "/");
+
+	            }
+
+		    $lastdate = $maxdate;
+
 	
 	}
 	
 	$lastdateThumbs = isset($_COOKIE['ThumbsLastDate']) ? $lastdate : '';
+
+	if ($mynoAddUtube=='off') {
 	
-	$lastdateUtube = isset($_COOKIE['UtubeLastDate']) ? $_COOKIE["UtubeLastDate"] : '';
+	    $lastdateUtube = isset($_COOKIE['UtubeLastDate']) ? $_COOKIE["UtubeLastDate"] : '';
+
+        } else {
+
+	    $lastdateUtube = isset($_COOKIE['UtubeLastDate']) ? $lastdate : '';
+
+	}
 
 } #list passwd
 	
@@ -165,8 +181,16 @@ if ($list == "entire") {
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-pills">
             <li><a href="index.php">links <span id="linksBadge" class="badge"></span></a></li>
-            <li class="active"><a href="thumbs.php">thumbs <span id="thumbsBadge" class="badge"></span></a></li>
-            <li><a href="vids.php">vids <span id="vidsBadge" class="badge"></span></a></li>
+           <?php 
+               if ($mynoAddUtube=='off' && $thumbsEnable==1) { 
+                   print "<li class=\"active\"><a href=\"thumbs.php\">thumbs <span id=\"thumbsBadge\" class=\"badge\"></span></a></li>\n";
+                   print "<li><a href=\"vids.php\">vids <span id=\"vidsBadge\" class=\"badge\"></span></a></li>\n"; 
+               } elseif ($mynoAddUtube=='on' && $thumbsEnable==1) { 
+                   print "<li class=\"active\"><a href=\"thumbs.php\">thumbs & vids <span id=\"thumbsvidsBadge\" class=\"badge\"></span></a></li>\n";
+               } else {
+                   print "<li><a href=\"vids.php\">vids <span id=\"vidsBadge\" class=\"badge\"></span></a></li>\n";
+               }
+           ?>
 	    <li class="dropdown">
 	      <a href="#" class="dropdown-toggle" data-toggle="dropdown">more <b class="caret"></b></a>
 	      <ul class="dropdown-menu">

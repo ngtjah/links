@@ -85,15 +85,15 @@ function db_query_vids($conn) {
 
 	if ( $newer ==  0 && $older == 0 ) {
 	 
-		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' ) order by edate desc, id desc limit $myMaxResults ";
+		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' or site LIKE '%.webm111%' ) order by edate desc, id desc limit $myMaxResults ";
 
 	} elseif ($newer == 0 && $older != 0) {
 
-		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' ) and edate < (select edate from links where id = $older) order by edate desc, id desc limit $myMaxResults ";
+		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' or site LIKE '%.webm111%' ) and edate < (select edate from links where id = $older) order by edate desc, id desc limit $myMaxResults ";
 
 	} else {
 
-		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' ) and edate > (select edate from links where id = $newer) order by edate asc, id asc limit $myMaxResults ";
+		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' or site LIKE '%.webm111%' ) and edate > (select edate from links where id = $newer) order by edate asc, id asc limit $myMaxResults ";
 
 	}
 
@@ -233,7 +233,7 @@ function db_display($id) {
     $total_width, $myMaxWidth, $myImgHeight, $mynoInfoTxt, $s3Enable, $s3Bucket, $thumbs_folder, $img_path, $img_folder, $myGifAutoPlay;
 
     $infotxt = "";
-    $GifAutoPlay       = ($myGifAutoPlay == "on") ? "" : " class=\"freezeframe\" ";
+    $GifAutoPlay       = ($myGifAutoPlay == "on") ? "" : " freezeframe ";
 
     #Set Username
     if($types[$id] == "twitter")
@@ -362,7 +362,7 @@ function db_display($id) {
 
 
     #If the thumbnail exists or s3Enabled or youtube or vimeo
-    if (file_exists($filepath_thumb) || $s3Enable == 1 || preg_match("/youtube/i",$urls[$id]) || preg_match("/vimeo/i",$urls[$id])) {
+    if (file_exists($filepath_thumb) || $s3Enable == 1 || preg_match("/youtube/i",$urls[$id]) || preg_match("/vimeo/i",$urls[$id]) || preg_match("/\.webm/i",$urls[$id])) {
     
     
       if ($s3Enable == 1) {
@@ -370,7 +370,7 @@ function db_display($id) {
         $width = $twidths[$id];
         $height = $theights[$id];
     
-      } elseif (preg_match("/youtube/i",$urls[$id]) || preg_match("/vimeo/i",$urls[$id])) {
+      } elseif (preg_match("/youtube/i",$urls[$id]) || preg_match("/vimeo/i",$urls[$id]) || preg_match("/\.webm/i",$urls[$id])) {
     
         $width = 200;
         $height = 150;
@@ -385,11 +385,12 @@ function db_display($id) {
 
     echo "<div class=\"thumb\">\n";
     
-    echo "<a ";
     
     #Build the thumb
     if (preg_match("/youtube/i",$urls[$id])) {
     
+       echo "<a ";
+
         #If the title doesn't exist go grab it from the youtube API
         if (strlen($titles[$id]) == 0) {
       
@@ -416,8 +417,37 @@ function db_display($id) {
         #echo "<img src=\"" . $filepath_thumb . "\" class=\"img-responsive img-thumbnail youtube-ngt\"></a>";
         echo "<img src=\"" . $filepath_thumb . "\" class=\"img-thumbnail youtube-ngt\"></a>";
 
+
+    } elseif (preg_match("/\.webm/i",$urls[$id])) {
+    
+        #If the title doesn't exist go grab it from the youtube API
+        if (strlen($titles[$id]) == 0) {
+      
+           #$oembed_youtube = simplexml_load_string(file_get_contents("http://gdata.youtube.com/feeds/api/videos/" . $youtubeid . "?fields=title"));
+           #$myTitle = $oembed_youtube->title;
+      
+        } else {
+      
+          $myTitle = $titles[$id];
+      
+        }
+      
+        echo "<video class=\"img-thumbnail webm-ngt\" controls >\n";
+        echo "<source src=\"$url\" type='video/webm; codecs=\"vp8, vorbis\"'>\n";
+	echo "</video>\n";
+        #echo "type=\"text/html\" ";
+        #echo "title=\"" . $titles[$id] . "\" ";
+        #echo "title=\"" . htmlentities($myTitle) . "\" ";
+        #echo "data-description=\"" . htmlentities($lightboxinfotxt) . "\"";
+        #echo "data-youtube=\"" . $youtubeid . "\" data-gallery ";
+        #echo "data-gallery=\"#blueimp-gallery\",\n";
+        #echo "data-poster=\"https://img.youtube.com/vi/" . $youtubeid . "/0.jpg\">\n";
+        #echo "<img src=\"" . $filepath_thumb . "\" class=\"img-responsive img-thumbnail youtube-ngt\"></a>";
+        #echo "<img src=\"" . $filepath_thumb . "\" class=\"img-thumbnail youtube-ngt\"></a>";
+
     } elseif (preg_match("/vimeo/i",$urls[$id])) {
 
+       echo "<a ";
 
         #$vimeodata = file_get_contents("http://vimeo.com/api/v2/video/" . $vimeoid . ".json");
         #$vimeodata = json_decode($data);
@@ -462,6 +492,10 @@ function db_display($id) {
 
     } else {
 
+      echo "<div class=\"img-responsive img-thumbnail\">\n";
+
+       echo "<a ";
+
         #echo "<a href=\"$filepath\" data-gallery>";
         #echo "<a href=\"thumbs2.php?id=$myid[$id]\" data-gallery>";
         #echo "type=\"image/jpeg',\n";
@@ -481,9 +515,13 @@ function db_display($id) {
         
         } else {
         
-            echo "<img $GifAutoPlay src=\"$filepath_thumb\" class=\"img-responsive img-thumbnail image-ngt\"></a>";
+            echo "<img src=\"$filepath_thumb\" class=\"image-ngt $GifAutoPlay\"></a>";
         
         }
+
+	echo "\n";
+
+	echo "</div>";
 
     }
 

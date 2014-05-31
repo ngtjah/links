@@ -33,7 +33,7 @@ if ($list != "entire" && $list != "random" && $list != "NoPasswd")
 if ($list != "NoPasswd") {
 
 
-	if (isset($_POST[ 'submit_settings' ]) ) {
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	        
 	  if ( isset($_POST[ 'noInfoTxtPost' ]) ) {
 	       $mynoInfoTxt = $_POST[ 'noInfoTxtPost' ];
@@ -62,7 +62,7 @@ if ($list != "NoPasswd") {
 	}
 	
 	
-	if (isset($_POST[ 'submit_settings' ]) ) {
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	
 	  if ( isset($_POST[ 'noAddUtubePost' ]) ) {
 	    $mynoAddUtube = $_POST[ 'noAddUtubePost' ];
@@ -81,7 +81,7 @@ if ($list != "NoPasswd") {
 	}
 
 
-	if (isset($_POST[ 'submit_settings' ]) ) {
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	
 	  if ( isset($_POST[ 'GifAutoPlayPost' ]) ) {
 	    $myGifAutoPlay = $_POST[ 'GifAutoPlayPost' ];
@@ -100,7 +100,7 @@ if ($list != "NoPasswd") {
 	}
 	
 	
-	if (isset($_POST[ 'submit_settings' ]) ) {
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	
 	  if ( isset($_POST[ 'hideImgOnLightboxOpenPost' ]) ) {
 	    $myhideImgOnLightboxOpen = $_POST[ 'hideImgOnLightboxOpenPost' ];
@@ -119,7 +119,7 @@ if ($list != "NoPasswd") {
 	}
 	
 	
-	if ( isset($_POST[ 'submit_settings' ]) ) {
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	
 	  if ( isset($_POST[ 'HideCachedImgs' ]) ) {
 	    $myHideCachedImgs = 1;
@@ -138,7 +138,7 @@ if ($list != "NoPasswd") {
 	}
 	
 	
-	if ( isset($_POST[ 'submit_settings' ])  ) {
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	
 	   if ( isset($_POST[ 'HideEmbed' ]) ) {
 	     $myHideEmbed = 1;
@@ -219,8 +219,16 @@ if ($list == "entire") {
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-pills">
             <li><a href="index.php">links <span id="linksBadge" class="badge"></span></a></li>
-      <?php if ($thumbsEnable==1) { print "<li><a href=\"thumbs.php\">thumbs <span id=\"thumbsBadge\" class=\"badge\"></span></a></li>\n"; } ?>
-            <li><a href="vids.php">vids <span id="vidsBadge" class="badge"></span></a></li>
+            <?php 
+                if ($mynoAddUtube=='off' && $thumbsEnable==1) { 
+                    print "<li><a href=\"thumbs.php\">thumbs <span id=\"thumbsBadge\" class=\"badge\"></span></a></li>\n";
+                    print "<li><a href=\"vids.php\">vids <span id=\"vidsBadge\" class=\"badge\"></span></a></li>\n"; 
+                } elseif ($mynoAddUtube=='on' && $thumbsEnable==1) { 
+                    print "<li><a href=\"thumbs.php\">thumbs & vids <span id=\"thumbsvidsBadge\" class=\"badge\"></span></a></li>\n";
+                } else {
+                    print "<li><a href=\"vids.php\">vids <span id=\"vidsBadge\" class=\"badge\"></span></a></li>\n";
+                }
+            ?>
 	    <li class="dropdown">
 	      <a href="#" class="dropdown-toggle" data-toggle="dropdown">more <b class="caret"></b></a>
 	      <ul class="dropdown-menu">
@@ -245,7 +253,7 @@ if ($list == "entire") {
 
        <h3>links</h3>
 
-	<form role="form" action="settings.php" method="POST">
+	<form id="ngtr-form" role="form" action="settings.php" method="POST" onchange="$('#ngtr-form').submit();">
 	  <div class="checkbox">
 	    <label>
 	      <input type="checkbox" name="HideEmbed"
@@ -283,7 +291,7 @@ if ($list == "entire") {
 				  print( " checked=\"checked\" " );
                                 }
 
-                ?>   > add vids
+                ?>   > combine thumbs and vids
 	    </label>
 	  </div>
 
@@ -326,7 +334,7 @@ if ($list == "entire") {
                 ?>   > add info text
 	    </label>
 	  </div>
-	  <button type="submit" name="submit_settings" class="btn btn-default">Save Settings</button>
+	  <!-- <button type="submit" name="submit_settings" class="btn btn-default">Save Settings</button> -->
 	</form>
 
 

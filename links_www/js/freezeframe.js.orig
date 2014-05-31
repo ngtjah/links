@@ -141,7 +141,7 @@ FreezeFrame = (function($) {
 
 				var freezeframe_figure = $("<figure />")
 					.attr("class", "freezeframe-container " + _ff.freezeframe_count)
-					.css({"/* display": "inline-block */",
+					.css({"display": "inline-block",
 						"overflow": "hidden",
 						"background": figure_background});
 
