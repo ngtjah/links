@@ -136,10 +136,10 @@ function db_display($id) {
   $readDateTime = time_since($since, $postDateTime);
 
 
-#  if ($postDateTime > $lastDateTime)
-#        echo $cells_bg2;
+  if (!isset($_POST["older"]) && $postDateTime > $lastDateTime)
+        echo " class=\"post-new\" ";
 #      else
-#  	echo $cells_bg;
+#        echo " class=\"post-new\" ";
 
   echo ">\n";
   

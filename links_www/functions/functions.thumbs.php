@@ -229,11 +229,17 @@ function db_query_rand($conn) {
 /* display a line in table */
 function db_display($id) {
 
-  global $myid, $dates, $announcers, $urls, $types, $authorization, $cells_bg, $font_size, $filenames, $twidths, $theights, $titles, 
+  global $myid, $dates, $announcers, $urls, $types, $authorization, $cells_bg, $font_size, $filenames, $twidths, $theights, $titles, $lastdate, 
     $total_width, $myMaxWidth, $myImgHeight, $mynoInfoTxt, $s3Enable, $s3Bucket, $thumbs_folder, $img_path, $img_folder, $myGifAutoPlay;
 
     $infotxt = "";
     $GifAutoPlay       = ($myGifAutoPlay == "on") ? "" : " freezeframe ";
+
+    $postDateTime = strtotime($dates[$id]);
+    $lastDateTime = strtotime($lastdate);
+    #$today = time();
+    #$since = $today - $postDateTime;
+    #$readDateTime = time_since($since, $postDateTime);
 
     #Set Username
     if($types[$id] == "twitter")
@@ -534,13 +540,18 @@ function db_display($id) {
     if ($mynoInfoTxt == "on") {
     
         #echo "<p><div style=\"position: relative; float: left; padding: 0px;\">\n";
-        echo "<div class=\"caption\">\n";
         
-        echo $infotxt;
+      if (!isset($_POST["older"]) && $postDateTime > $lastDateTime) {
+            echo "<div class=\"post-new caption\">\n";
+      } else {
+            echo "<div class=\"caption\">\n";
+      }
         
-        echo "\n";
-        
-        echo "</div> <!-- caption -->\n";
+      echo $infotxt;
+      
+      echo "\n";
+      
+      echo "</div> <!-- caption -->\n";
     
     } #mynoinfotxt
     

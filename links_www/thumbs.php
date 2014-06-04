@@ -96,7 +96,7 @@ if ($list != "NoPasswd") {
 
 	            }
 
-		    $lastdate = $maxdate;
+		    #$lastdate = $maxdate;
 
 	
 	}

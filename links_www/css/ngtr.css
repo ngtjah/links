@@ -55,12 +55,36 @@ body {
     //text-transform: uppercase;
     
 }
+
 .post-thumb {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 1;
 }
+
+.post-new {
+   -webkit-animation: myfirst 10s; /* Chrome, Safari, Opera */
+   animation: myfirst 5s;
+
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes myfirst
+{
+from {background: #5CAD85;}
+to {background: white;}
+}
+
+/* Standard syntax */
+@keyframes myfirst
+{
+from {background: #5CAD85;}
+to {background: white;}
+}
+
+
+
 .post-title-thumbs {
     position: absolute;
     top: 0;

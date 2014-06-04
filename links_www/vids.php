@@ -83,7 +83,7 @@ if ($list != "NoPasswd") {
 	
 	#	if ($lastdatetime < $maxdatetime) {
 		    setcookie("UtubeLastDate", $maxdate, time()+(60*60*24*365), "/");
-		    $lastdate = $maxdate;
+		    #$lastdate = $maxdate;
 	#	}
 	
 	}
