@@ -60,7 +60,7 @@ function db_query_settings($conn) {
   global $http, $ftp, $announcer, $partialurl, $newer, $older, $filename, $myMaxResults, $myUtubeSQL;
 
 
-	$maxdatesql = "select (select date_format(max(edate), '%m/%d/%y %H:%i:%s') from links where ( site LIKE '%youtube.com%' or site LIKE '%vimeo.com%' )) as utube, (select date_format(max(edate), '%m/%d/%y %H:%i:%s') from links where site like '%soundcloud.com%') as scloud, (select date_format(max(edate), '%m/%d/%y %H:%i:%s') from links where ( filename is not null OR site like '%youtube%' or site LIKE '%vimeo.com%' )) as img;";
+	$maxdatesql = "select (select date_format(max(edate), '%m/%d/%y %H:%i:%s') from links where ( site LIKE '%youtube.com%' or site LIKE '%vimeo.com%' )) as utube, (select date_format(max(edate), '%m/%d/%y %H:%i:%s') from links where site like '%soundcloud.com%') as scloud, (select date_format(max(edate), '%m/%d/%y %H:%i:%s') from links where ( filename is not null OR site LIKE '%youtube.com%' or site LIKE '%vimeo.com%' )) as img;";
 
 
 	$maxdateresult  = mysql_query($maxdatesql, $conn)
@@ -85,15 +85,15 @@ function db_query_vids($conn) {
 
 	if ( $newer ==  0 && $older == 0 ) {
 	 
-		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' or site LIKE '%.webm111%' ) order by edate desc, id desc limit $myMaxResults ";
+		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube.com%' or site LIKE '%vimeo.com%' or site LIKE '%.webm111%' ) order by edate desc, id desc limit $myMaxResults ";
 
 	} elseif ($newer == 0 && $older != 0) {
 
-		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' or site LIKE '%.webm111%' ) and edate < (select edate from links where id = $older) order by edate desc, id desc limit $myMaxResults ";
+		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube.com%' or site LIKE '%vimeo.com%' or site LIKE '%.webm111%' ) and edate < (select edate from links where id = $older) order by edate desc, id desc limit $myMaxResults ";
 
 	} else {
 
-		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube%' or site LIKE '%vimeo.com%' or site LIKE '%.webm111%' ) and edate > (select edate from links where id = $newer) order by edate asc, id asc limit $myMaxResults ";
+		$sql = "SELECT id, site, announcer, date_format(edate, '%m/%d/%y %H:%i:%s') as edate1, type, filename, twidth, theight, title from links WHERE ( site LIKE '$partialurl' OR announcer LIKE '$partialurl' OR title LIKE '$partialurl' ) and ( site LIKE '%youtube.com%' or site LIKE '%vimeo.com%' or site LIKE '%.webm111%' ) and edate > (select edate from links where id = $newer) order by edate asc, id asc limit $myMaxResults ";
 
 	}
 
@@ -200,7 +200,7 @@ function db_query_thumbs($conn) {
 
 function db_query_rand($conn) {
 
-	$sql = "SELECT id, site, announcer, filename, twidth, theight from links WHERE ( filename is not null OR site like '%youtube%' ) order by rand() limit 1 ";
+	$sql = "SELECT id, site, announcer, filename, twidth, theight from links WHERE ( filename is not null OR site LIKE '%youtube.com%' ) order by rand() limit 1 ";
 
 	#echo "sql: $sql\n";
 	$result = mysql_query($sql, $conn)
@@ -310,28 +310,61 @@ function db_display($id) {
         $parsed_url = parse_url($url);
     
         $parsed_query = isset($parsed_url['query']) ? $parsed_url['query'] : 'FAIL';
+
     
         $query_string = explode( '&', $parsed_query );
-    
+	    
         $args = array( ); // return array
-    
+	    
         foreach( $query_string as $chunk )
-    	{
-    	  $chunk = explode( '=', $chunk );
-    	  // it's only really worth keeping if the parameter
-    	  // has an argument.
-    	  if ( count( $chunk ) == 2 )
-    	    {
-    	      list( $key, $val ) = $chunk;
-    	      $args[ $key ] = urldecode( $val );
-    	    }
-    	}
-    
+	    {
+	      $chunk = explode( '=', $chunk );
+	      // it's only really worth keeping if the parameter
+	      // has an argument.
+	      if ( count( $chunk ) == 2 )
+	        {
+	          list( $key, $val ) = $chunk;
+	          $args[ $key ] = urldecode( $val );
+	        }
+	    }
+	    
         $youtubeid = isset($args['v']) ? $args['v'] : '';
-    
+
+        #Find the VideoID if its in the path
+	if ( $youtubeid == '' ) {
+
+            $parsed_path = isset($parsed_url['path']) ? $parsed_url['path'] : 'FAIL';
+
+            $path_string = explode( '/', $parsed_path );
+    	    
+	    $markit = 0;
+    	    
+            foreach( $path_string as $chunk )
+    	        {
+
+		  if ($markit == 1) {
+
+		    $youtubeid = $chunk;
+
+		    break;
+
+		  }
+
+		  if ($chunk == 'v' || $chunk == 'embed') {
+
+		    $markit = 1;
+
+		  }
+
+
+    	        }
+    	    
+	}
+	    
         $filepath = "http://img.youtube.com/vi/" . $youtubeid . "/0.jpg";
         $filepath_thumb = "http://img.youtube.com/vi/" . $youtubeid . "/0.jpg";
-    
+
+
     } elseif (preg_match("/vimeo/i",$urls[$id])) {
 
         $pattern = '/(\/\/www\.)?vimeo.com.*\/(\d+)($|\/|#)/';
