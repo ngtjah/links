@@ -147,9 +147,21 @@ sub get_remote_server_mimetype {
        $req->header('Accept' => 'text/html');
 
     my $res = $ua->request($req);
-       
+
        $self->{'mimetype'} = $res->content_type;
        $self->{'mimetype_returncode'} = $res->code;
+
+    #Some webservers won't let us get the HEAD only(ex. developer.chrome.com) so we try again with a full GET here.
+    if ( ! $res->is_success ) {
+
+	undef $res;
+	my $req2 = HTTP::Request->new(GET => $self->{'www_url'} );
+	$res  = $ua->request($req2);
+
+	$self->{'mimetype'} = $res->content_type;
+	$self->{'mimetype_returncode'} = $res->code;
+
+    }
 
     if ( $res->is_success ) {
 
@@ -735,6 +747,35 @@ sub db_insert_site {
 }
 
 
+sub db_update_site_post {
+
+    $self = shift;
+
+    #Updating the Site Database.
+    print "Updating site...\n" if $main::debug;
+
+    my $quoted_title      = $main::dbh->quote($self->{'title'});
+    my $quoted_filename   = $main::dbh->quote($self->{'filename_unescaped'});
+    my $quoted_TWidth     = $main::dbh->quote($self->{'TWidth'});
+    my $quoted_THeight    = $main::dbh->quote($self->{'THeight'});
+    my $quoted_MWidth     = $main::dbh->quote($self->{'MWidth'});
+    my $quoted_MHeight    = $main::dbh->quote($self->{'MHeight'});
+    my $quoted_appid      = 1;
+
+    $sql = "UPDATE links set title = $quoted_title, filename = $quoted_filename, twidth = $quoted_TWidth, theight = $quoted_THeight, "
+            . " width = $quoted_MWidth, height = $quoted_MHeight, appid = $quoted_appid "
+            . " WHERE id = $self->{'id'}";
+
+
+    print "MYSQL:" . $sql . "\n";
+    
+    my $sth = $main::dbh->prepare($sql);
+    $main::entries += $sth->execute;
+
+
+}
+
+
 
 sub db_bump_site {
 
@@ -811,11 +852,16 @@ sub bot_announce_site {
 
                     $chatline = '.say #lanfoolz ' . '<@' . $self->{'announcer'} . '> ' . $decode_site;
 
-    } else {
+    } elsif ($self->{'type'} eq "post") {
+
+                    $chatline = '.say #lanfoolz ' . '<%' . $self->{'announcer'} . '> ' . $decode_site;
+
+    } else { #Pocket
 
 	if ($self->{'title'}) {
 
-                    $chatline = '.say #lanfoolz ' . '<#' . $self->{'announcer'} . '> ' . $decode_site . ' - ' . $self->{'title'};
+                    $chatline = '.say #lanfoolz ' . '<#' . $self->{'announcer'} . '> ' . $decode_site;
+                    #$chatline = '.say #lanfoolz ' . '<#' . $self->{'announcer'} . '> ' . $decode_site . ' - ' . $self->{'title'};
 
 	} else {
 
