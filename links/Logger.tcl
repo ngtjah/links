@@ -52,7 +52,7 @@ proc logger:join {nick uhost handle chan} {
     puts $log "\r"
     puts $log "Session Start: [strftime "%a %b %d %T %Y"]\r"
     puts $log "Session Ident: $chan\r"
-    puts $log "\[[strftime "%H:%M:%G-%m-%d"]\] * Now talking in $chan\r"
+    puts $log "\[[strftime "%H:%M:%Y-%m-%d"]\] * Now talking in $chan\r"
     close $log
   } else {
     logger:save $chan "* $nick ($uhost) has joined $chan"
@@ -124,7 +124,7 @@ proc logger:action {nick uhost handle dest keyword text} {
 proc logger:save {chan text} {
   global logger
   set log "[open "$logger(dir)$chan.log" a]"
-  puts $log "\[[strftime "%H:%M:%S:%G-%m-%d"]\] [logger:strip $text]\r"
+  puts $log "\[[strftime "%H:%M:%S:%Y-%m-%d"]\] [logger:strip $text]\r"
   close $log
 }
 
@@ -174,7 +174,7 @@ proc logger:time-save {minute hour day month year} {
     puts $log "\r"
     puts $log "Session Start: [strftime "%a %b %d %T %Y"]\r"
     puts $log "Session Ident: $channel\r"
-    puts $log "\[[strftime "%H:%M:%S:%G-%m-%d"]\] * Now talking in $channel\r"
+    puts $log "\[[strftime "%H:%M:%S:%Y-%m-%d"]\] * Now talking in $channel\r"
     close $log
     putquick "TOPIC $channel"
   }
