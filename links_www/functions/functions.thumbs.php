@@ -386,9 +386,10 @@ function db_display($id) {
     } else {
 
         if ($s3Enable == 1) {
-        
-          $filepath = "https://" . $s3Bucket . ".s3.amazonaws.com/" . $img_folder . "/" . $filenames[$id];
-          $filepath_thumb = "https://" . $s3Bucket . ".s3.amazonaws.com/" . $thumbs_folder . "/thumb_" . $filenames[$id];
+     
+	  #URL Encode the foler and filename for amazon
+	    $filepath = "https://" . $s3Bucket . ".s3.amazonaws.com/" . $img_folder . "/" . urlencode($filenames[$id]);
+          $filepath_thumb = "https://" . $s3Bucket . ".s3.amazonaws.com/" . $thumbs_folder . "/" . urlencode("thumb_" . $filenames[$id]);
         
         } else {
         
@@ -430,7 +431,7 @@ function db_display($id) {
     
        echo "<a ";
 
-        #If the title doesn't exist go grab it from the youtube API
+        #If the title doesnt exist go grab it from the youtube API
         if (strlen($titles[$id]) == 0) {
       
            $oembed_youtube = simplexml_load_string(file_get_contents("http://gdata.youtube.com/feeds/api/videos/" . $youtubeid . "?fields=title"));
@@ -459,7 +460,7 @@ function db_display($id) {
 
     } elseif (preg_match("/\.webm/i",$urls[$id])) {
     
-        #If the title doesn't exist go grab it from the youtube API
+        #If the title doesnt exist go grab it from the youtube API
         if (strlen($titles[$id]) == 0) {
       
            #$oembed_youtube = simplexml_load_string(file_get_contents("http://gdata.youtube.com/feeds/api/videos/" . $youtubeid . "?fields=title"));
@@ -504,7 +505,7 @@ function db_display($id) {
         // Load in the oEmbed XML
         $oembed = simplexml_load_string(curl_get($xml_url));
         
-        #If the title doesn't exist go grab it from the vimeo API
+        #If the title doesnt exist go grab it from the vimeo API
         if (strlen($titles[$id]) == 0) {
         
           $myTitle = $oembed->title;
@@ -524,7 +525,7 @@ function db_display($id) {
         echo "title=\"" . htmlentities($myTitle) . "\" ";
         echo "data-vimeo=\"" . $vimeoid . "\" data-gallery ";
         echo "data-description=\"" . htmlentities($lightboxinfotxt) . "\" ";
-        #echo ""data-gallery=\"#blueimp-gallery\",\n";
+	#echo "\"data-gallery=\"#blueimp-gallery\",\n";
         echo "data-poster=\"" . $vimeo_thumbnail_url . "\">\n";
         echo "<img src=\"" . $vimeo_thumbnail_url . "\" class=\"img-responsive img-thumbnail youtube-ngt\"></a>";
 
@@ -540,7 +541,7 @@ function db_display($id) {
         #echo "type=\"image/jpeg',\n";
         #echo "data-gallery=\"#blueimp-gallery',\n";
         
-        #Show the cache'd copy in the lightbox if it exists
+        #Show the cached copy in the lightbox if it exists
         if( strlen($filepath) > 0 )
           $lightboxinfotxt .= "- <a target=\"_blank\" href=\"$filepath\">(cache)</a>\n";
           #$infotxt .= "  <a target=\"_blank\" href=\"$filepath\">(cache)</a>\n";
