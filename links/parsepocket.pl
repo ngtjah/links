@@ -105,7 +105,7 @@ sub parse_pocket {
         my $username = $pocket_local_users[0];
         my $myURL_meta = quotemeta($ConfigLinks::my_url);
 
-        print "\tRunning Pocket for: $username\n";
+        print "\n\nRunning Pocket for: $username\n";
         
         #Get the last pocket id for this user
         my $sql             = "SELECT IFNULL(max(appid),0), IFNULL(max(UNIX_TIMESTAMP(edate)),0) FROM links where type = 'pocket' and announcer = '$username'";
@@ -230,6 +230,10 @@ sub parse_pocket {
 		    } # If the initial mimetype could be retrieved successfully
 
 
+		    use Data::Dumper;
+		    print Dumper $Pocket;
+
+
 		} else { #IS a DUPE
 
                       #We can't bump stuff for now because the twitter ID is not stored on bump
@@ -241,11 +245,9 @@ sub parse_pocket {
                       #
                       #}
 
+		    print "Dupe URL: $Pocket->{'www_url'} Nick: $Pocket->{'announcer'} OG Nick: $Pocket->{'og'}{'og_announcer'} OG date: $Pocket->{'og'}{'og_edate'}\n" if $debug;
+
 		}  #If NOT a DUPE
-
-
-		    use Data::Dumper;
-		    print Dumper $Pocket;
 
 
 		}  elsif (  $Pocket->{'www_url'} =~ /$myURL_meta/i ) { # this is our URL
