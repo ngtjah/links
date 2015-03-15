@@ -37,6 +37,9 @@ our $botPassword = "";
 our $botHostname = "localhost";
 our $botTcpPort  = "5555";
 
+# Youtube API v3 Server Key
+our $youtubeapikey = "";
+
 # Enable/Disable Posting To Twitter from: (logs, twitter, and pocket)
 our $twitter_enable_push = "0";
 
@@ -67,6 +70,6 @@ our $aws_secret_access_key = "";
 our $aws_bucket 	   = "";
 
 # Browser Agent
-our $browser_agent = "Mozilla/5.0";
+our $browser_agent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36";
 
 1;

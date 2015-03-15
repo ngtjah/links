@@ -8,7 +8,7 @@ require Exporter;
 @ISA = (Exporter);
 
 
-@EXPORT = qw( new dupe_check get_remote_server_mimetype create_img_filename download_image get_local_mimetype create_thumbnail move_thumbnail_to_s3_bucket thumbnail_failed image_download_failed get_title db_insert_site db_bump_site bot_bump_site twitter_update_site );
+@EXPORT = qw( new dupe_check get_remote_server_mimetype create_img_filename download_image get_local_mimetype create_thumbnail move_thumbnail_to_s3_bucket thumbnail_failed image_download_failed get_title db_insert_site db_bump_site bot_bump_site twitter_update_site bot_announce_sitefail );
  
 sub new {
 
@@ -139,7 +139,7 @@ sub get_remote_server_mimetype {
     my $self = shift;
 
     #Setup the UserAgent
-    my $ua = new LWP::UserAgent(agent=>$ConfigLinks::browser_agent,timeout=>60);
+    my $ua = new LWP::UserAgent(agent=>$ConfigLinks::browser_agent,timeout=>60,ssl_opts => { SSL_verify_mode => SSL_VERIFY_NONE });
        #$ua->show_progress(1);
 
     #Lets get the MIME Type from the Headers
@@ -151,22 +151,39 @@ sub get_remote_server_mimetype {
        $self->{'mimetype'} = $res->content_type;
        $self->{'mimetype_returncode'} = $res->code;
 
+       #print "HEAD content: " . $res->as_string . "\n\n";
+
     #Some webservers won't let us get the HEAD only(ex. developer.chrome.com) so we try again with a full GET here.
     if ( ! $res->is_success ) {
 
 	undef $res;
 	my $req2 = HTTP::Request->new(GET => $self->{'www_url'} );
-	$res  = $ua->request($req2);
+           #$req2->header('Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8');
+	   
+	$res = $ua->request($req2);
 
 	$self->{'mimetype'} = $res->content_type;
 	$self->{'mimetype_returncode'} = $res->code;
 
+	#Debug Info
+	$self->{'head_mimetype_error'} = $res->content_type;
+	$self->{'head_mimetype_returncode_error'} = $res->code;
+
+	#print " GET content: " . $res->as_string . "\n\n";
+
     }
 
-    if ( $res->is_success ) {
+    # if it is a succes OR it is a youtube url and the youtubeapikey is set
+    if ( $res->is_success || ( $self->{'www_url'} =~ /.*(youtube\.com|youtu\.be).*/i && $ConfigLinks::youtubeapikey ne "" ) ) {
 
 	#Set the www_url to the resolved URI in case we got a 301 or 302 redirect
-	$self->{'www_url'} = $res->request()->uri->as_string;
+	my $www_url_resolved = $res->request()->uri->as_string;
+	if ( $self->{'www_url'} ne $www_url_resolved ) {
+
+	    $self->{'www_url_orig'} = $self->{'www_url'};
+	    $self->{'www_url'}      = $www_url_resolved;
+
+	}
 
 	print "Remote Server Mime Type: $self->{'mimetype'} \n" if $main::debug;
 
@@ -188,11 +205,12 @@ sub get_remote_server_mimetype {
 
 	}
 
+	#Return good even if youtube returned an error
+	return 1;
 
     }
 
     return $res->is_success;
-
 
 }
 
@@ -317,7 +335,7 @@ sub download_image {
     print "Attempting to Download $self->{'www_img'} IMG file to Path: $self->{'full_path'} \n" if $main::debug;
 
     #Setup the UserAgent
-    my $ua = new LWP::UserAgent(agent=>$ConfigLinks::browser_agent,timeout=>60);
+    my $ua = new LWP::UserAgent(agent=>$ConfigLinks::browser_agent,timeout=>60,ssl_opts => { SSL_verify_mode => SSL_VERIFY_NONE });
 
     #Go GET the img file
     my $req = new HTTP::Request 'GET', $self->{'www_img'};
@@ -584,30 +602,72 @@ sub get_title {
 
     $self = shift;
 
-    my $ua = new LWP::UserAgent(agent=>$ConfigLinks::browser_agent,timeout=>60);
+    my $ua = new LWP::UserAgent(agent=>$ConfigLinks::browser_agent,timeout=>60,ssl_opts => { SSL_verify_mode => SSL_VERIFY_NONE });
+    my $res;
+    my $utf8flag;
+
+    # If it is a youtube link and api setting is configured try the API
+    if ( $self->{'www_url'} =~ /.*(youtube\.com|youtu\.be).*/i && $ConfigLinks::youtubeapikey ne "" ) {
+
+	#Get Video ID
+	my ($youtubevideoid) = $self->{'www_url'} =~ m! (?: \bv i? [/=] | be/ ) (\w+) !x;
+        $self->{'youtube_url'} = 'https://www.googleapis.com/youtube/v3/videos?key=' . $ConfigLinks::youtubeapikey . '&part=snippet&id=' . $youtubevideoid;
+
+    }
 
     #Go GET the webpage
-    my $res = $ua->get( $self->{'www_url'} );
+    if ( $self->{'youtube_url'} ) {
+
+	$res = $ua->get( $self->{'youtube_url'} );
+
+    } else {
+
+	$res = $ua->get( $self->{'www_url'} );
+
+    }
     
+    $self->{'titletype'} = $res->content_type;
+    $self->{'titletype_returncode'} = $res->code;
+
+    #print "\n\n test test test $self->{'titletype'} $self->{'titletype_returncode'} \n\n\n";
+
     #If the Get worked lets get the title
     if ( $res->is_success ) {
 
 	#If the title is there, set it.
-	if ( $res->header('Title') ) {
+	if ( $res->header('Title') || $self->{'youtube_url'} ) {
 
+	    my $title;
 
-	    my $utf8flag = Encode::is_utf8( $res->header('Title') );
+	    if ( $res->header('Title') ) {
 
-	    if ( $utf8flag == 1 ) {
-	    	
-	       $self->{'title'} = Encode::encode('UTF-8', $res->header('Title'));
-	    	
+		$utf8flag = Encode::is_utf8( $res->header('Title') );
+		$title = $res->header('Title');		
+
 	    } else {
-       
-	       $self->{'title'} = $res->header('Title');
+
+		print "starting youtube title\n";
+		if ( $res->decoded_content =~ /\"title\":\ \"(.+?)\"/ ) {
+
+		    $utf8flag = Encode::is_utf8( $1 );
+		    $title = $1;
+
+		}
 
 	    }
 
+	    # Attempt to Convert UTF8
+	    if ( $utf8flag == 1 ) {
+	    	
+		$self->{'title'} = Encode::encode('UTF-8', $title);
+	    	
+	     } else {
+       
+		 $self->{'title'} = $title;
+
+	     }
+
+	
 	    #Detect image on Special Image hosting sites
 	    if ( ! $self->{'www_img'} ) {
 
@@ -692,10 +752,13 @@ sub get_title {
 		     #use Data::Dumper;
 		     #print Dumper $res;
 
-                 } # Imgur
+                 }  #Imgur
+
 	    
 	    }  # If www_img not set
 	    
+
+
 	    print "Title: " . $self->{'title'} . "\n" if $main::debug;
 
 	}
@@ -871,6 +934,42 @@ sub bot_announce_site {
 
     }
 
+    
+    eval{
+    
+        $telnet->open($ConfigLinks::botHostname);
+        $telnet->waitfor('/Nickname\..*$/i');
+        $telnet->print($ConfigLinks::botUsername);
+        $telnet->waitfor('/Enter your password\..*$/i');
+        $telnet->print($ConfigLinks::botPassword);
+        $telnet->waitfor('/.*joined\ the\ party\ line\..*/i');
+        $telnet->print($chatline);
+    
+    };
+
+
+    return 1;
+
+
+}
+
+sub bot_announce_sitefail {
+
+    require Net::Telnet;
+
+    $self = shift;
+
+    my $chatline;
+    my $decode_site = uri_unescape($self->{'body'});
+    my $decode_url = uri_unescape($self->{'www_url'});
+
+    my $telnet = new Net::Telnet ( Timeout=>10,
+                                   Errmode=>'die',
+                                   Port=>$ConfigLinks::botTcpPort);
+                                   #Output_log=> 'output.txt'
+
+
+    $chatline = '.say #lanfoolz ' . 'URL Failed: ' . $decode_url . '  ReturnCode: ' . $self->{'mimetype_returncode'};
     
     eval{
     

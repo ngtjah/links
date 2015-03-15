@@ -101,7 +101,7 @@ sub startup {
 
 
 	my $dsn = "DBI:$ConfigLinks::driver:database=$ConfigLinks::database;host=$ConfigLinks::hostname;port=$ConfigLinks::port";
-	$dbh = DBI->connect( $dsn, $ConfigLinks::user, $ConfigLinks::password ) || die("Cannot connect to database\n");
+	$dbh = DBI->connect( $dsn, $ConfigLinks::user, $ConfigLinks::password, {mysql_enable_utf8 => 1} ) || die("Cannot connect to database\n");
 	$drh = DBI->install_driver("mysql");
 
 }
@@ -225,6 +225,8 @@ sub parse_log {
     		    		} else { # If the initial mimetype download could NOT be retrieved successfully
     		    
     		    		    print "This URL: $Link->{'www_url'} doesn't really exist!! Return Code: $Link->{'mimetype_returncode'}\n\n";
+
+				    $Link->bot_announce_sitefail;
     		    
     		    		} # If the initial mimetype could be retrieved successfully
     		    
