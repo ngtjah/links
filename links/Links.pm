@@ -8,7 +8,7 @@ require Exporter;
 @ISA = (Exporter);
 
 
-@EXPORT = qw( new dupe_check get_remote_server_mimetype create_img_filename download_image get_local_mimetype create_thumbnail move_thumbnail_to_s3_bucket thumbnail_failed image_download_failed get_title db_insert_site db_bump_site bot_bump_site twitter_update_site bot_announce_sitefail );
+@EXPORT = qw( new dupe_check get_remote_server_mimetype create_img_filename download_image get_local_mimetype create_thumbnail move_thumbnail_to_s3_bucket thumbnail_failed image_download_failed get_title db_insert_site db_bump_site bot_bump_site twitter_update_site bot_announce_title bot_announce_site bot_announce_sitefail );
  
 sub new {
 
@@ -758,6 +758,8 @@ sub get_title {
 	    }  # If www_img not set
 	    
 
+	    #Announce it to the channel
+	    bot_announce_title($self);
 
 	    print "Title: " . $self->{'title'} . "\n" if $main::debug;
 
@@ -931,6 +933,58 @@ sub bot_announce_site {
                     $chatline = '.say #lanfoolz ' . '<#' . $self->{'announcer'} . '> ' . $decode_site;
 
 	}
+
+    }
+
+    
+    eval{
+    
+        $telnet->open($ConfigLinks::botHostname);
+        $telnet->waitfor('/Nickname\..*$/i');
+        $telnet->print($ConfigLinks::botUsername);
+        $telnet->waitfor('/Enter your password\..*$/i');
+        $telnet->print($ConfigLinks::botPassword);
+        $telnet->waitfor('/.*joined\ the\ party\ line\..*/i');
+        $telnet->print($chatline);
+    
+    };
+
+
+    return 1;
+
+
+}
+
+sub bot_announce_title {
+
+    require Net::Telnet;
+
+    $self = shift;
+
+    my $chatline;
+    my $announce_title = uri_unescape($self->{'title'});
+
+    my $telnet = new Net::Telnet ( Timeout=>10,
+                                   Errmode=>'die',
+                                   Port=>$ConfigLinks::botTcpPort);
+                                   #Output_log=> 'output.txt'
+
+
+    if ($self->{'type'} eq "twitter") {
+
+	$chatline = '.say #lanfoolz ' . '<@' . $self->{'announcer'} . '> ' . $announce_title;
+
+    } elsif ($self->{'type'} eq "post") {
+
+	$chatline = '.say #lanfoolz ' . '<%' . $self->{'announcer'} . '> ' . $announce_title;
+
+    } elsif ($self->{'type'} eq "irc") {
+
+	$chatline = '.say #lanfoolz ' . '<' . $self->{'announcer'} . '> ' . $announce_title;
+
+    } else { #Pocket
+
+	$chatline = '.say #lanfoolz ' . '<#' . $self->{'announcer'} . '> ' . $announce_title;
 
     }
 

@@ -243,6 +243,7 @@ sub parse_log {
     		    	    }  #If NOT a DUPE
     		    	                  
     		    	    use Data::Dumper;
+			    $Data::Dumper::Sortkeys = 1;
     		    	    print Dumper $Link;
     		    	
     		    	}    #if $parseline
