@@ -29,7 +29,8 @@ our $img_download_enable = "0";
 our $my_url = "www.mysite.com/links";
 
 # Enable/Disable Eggdrop Bot Chat. (logs, twitter, and pocket)
-our $bot_enable = "0";
+our $bot_enable         = "0";
+our $bot_announce_title = "0";
 
 # Eggdrop Bot TELNET Login (use only if the bot is running locally)
 our $botUsername = "";

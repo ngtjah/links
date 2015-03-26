@@ -226,7 +226,11 @@ sub parse_log {
     		    
     		    		    print "This URL: $Link->{'www_url'} doesn't really exist!! Return Code: $Link->{'mimetype_returncode'}\n\n";
 
-				    $Link->bot_announce_sitefail;
+				    if ( $ConfigLinks::bot_enable == 1 ) {
+
+					$Link->bot_announce_sitefail;
+
+				    }
     		    
     		    		} # If the initial mimetype could be retrieved successfully
     		    

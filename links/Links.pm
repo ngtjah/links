@@ -759,7 +759,11 @@ sub get_title {
 	    
 
 	    #Announce it to the channel
-	    bot_announce_title($self);
+	    if ( $ConfigLinks::bot_enable == 1 && $ConfigLinks::bot_announce_title == 1 ) {
+
+		bot_announce_title($self);
+
+	    }
 
 	    print "Title: " . $self->{'title'} . "\n" if $main::debug;
 
