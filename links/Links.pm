@@ -992,19 +992,21 @@ sub bot_announce_title {
 
     }
 
-    
-    eval{
-    
-        $telnet->open($ConfigLinks::botHostname);
-        $telnet->waitfor('/Nickname\..*$/i');
-        $telnet->print($ConfigLinks::botUsername);
-        $telnet->waitfor('/Enter your password\..*$/i');
-        $telnet->print($ConfigLinks::botPassword);
-        $telnet->waitfor('/.*joined\ the\ party\ line\..*/i');
-        $telnet->print($chatline);
-    
-    };
+    if (length($announce_title) > 0 && $announce_title ne "Instagram") {
 
+      eval{
+      
+          $telnet->open($ConfigLinks::botHostname);
+          $telnet->waitfor('/Nickname\..*$/i');
+          $telnet->print($ConfigLinks::botUsername);
+          $telnet->waitfor('/Enter your password\..*$/i');
+          $telnet->print($ConfigLinks::botPassword);
+          $telnet->waitfor('/.*joined\ the\ party\ line\..*/i');
+          $telnet->print($chatline);
+      
+      };
+
+   }
 
     return 1;
 
