@@ -436,9 +436,8 @@ function db_display($id) {
       
            $oembed_youtube = simplexml_load_string(file_get_contents("http://gdata.youtube.com/feeds/api/videos/" . $youtubeid . "?fields=title"));
            $myTitle = $oembed_youtube->title;
-      
+
         } else {
-      
       
           $myTitle = $titles[$id];
           $myTitle = str_replace(" - YouTube","",$myTitle);
@@ -529,6 +528,47 @@ function db_display($id) {
         echo "data-poster=\"" . $vimeo_thumbnail_url . "\">\n";
         echo "<img src=\"" . $vimeo_thumbnail_url . "\" class=\"img-responsive img-thumbnail youtube-ngt\"></a>";
 
+
+    } elseif (preg_match("/instagr/i",$urls[$id])) {
+
+      $oembed_instagram_url = str_replace("instagram.com","instagr.am",$urls[$id]);
+
+#      $oembed_instagram_data = json_decode(file_get_contents('http://api.instagram.com/oembed?omitscript=true&url='.$oembed_instagram_url), true);
+
+      preg_match('/\/(?P<shortcode>\w{5,})\/$/', $oembed_instagram_url, $instagram_shortcode);
+
+      $oembed_instagram_data = json_decode(file_get_contents('https://api.instagram.com/v1/media/shortcode/'.$instagram_shortcode['shortcode'].'?client_id=153440ef1b5340e8bb347fbcfdfe9427'), true);
+
+      $oembed_instagram_mp4 = $oembed_instagram_data['data']['videos']['standard_resolution']['url'];
+
+      echo "<div class=\"img-responsive img-thumbnail\">\n";
+
+      echo "<a ";
+
+      #Show the cached copy in the lightbox if it exists
+      if( strlen($filepath) > 0 )
+	$lightboxinfotxt .= "- <a target=\"_blank\" href=\"$filepath\">(cache)</a>\n";
+	#$infotxt .= "  <a target=\"_blank\" href=\"$filepath\">(cache)</a>\n";
+
+	if( strlen($oembed_instagram_mp4) > 0 ) {
+
+           echo "href=\"$oembed_instagram_mp4\" ";
+	   echo "type=\"video/mp4\" ";
+	   echo "data-poster=\"$filepath\" ";
+
+        } else {
+
+	  echo "href=\"$filepath\" ";
+
+	}
+
+        echo "data-description=\"" . htmlentities($lightboxinfotxt) . "\" data-gallery>\n";
+
+        echo "<img src=\"$filepath_thumb\" class=\"image-ngt $GifAutoPlay\"></a>";
+
+        echo "\n";
+
+        echo "</div>";
 
     } else {
 

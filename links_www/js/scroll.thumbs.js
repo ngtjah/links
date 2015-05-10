@@ -50,6 +50,9 @@ $(function(){
 			//check for animated gifs to pause
 			freezeframe.run();
 
+			//check for instagrams
+			//instgrm.Embeds.process();
+
 
                     } else {
 
