@@ -230,7 +230,7 @@ function db_query_rand($conn) {
 function db_display($id) {
 
   global $myid, $dates, $announcers, $urls, $types, $authorization, $cells_bg, $font_size, $filenames, $twidths, $theights, $titles, $lastdate, 
-    $total_width, $myMaxWidth, $myImgHeight, $mynoInfoTxt, $s3Enable, $s3Bucket, $thumbs_folder, $img_path, $img_folder, $myGifAutoPlay;
+    $total_width, $myMaxWidth, $myImgHeight, $mynoInfoTxt, $s3Enable, $s3Bucket, $thumbs_folder, $img_path, $img_folder, $myGifAutoPlay, $instagram_clientid;
 
     $infotxt = "";
     $GifAutoPlay       = ($myGifAutoPlay == "on") ? "" : " freezeframe ";
