@@ -537,7 +537,7 @@ function db_display($id) {
 
       preg_match('/\/(?P<shortcode>\w{5,})\/$/', $oembed_instagram_url, $instagram_shortcode);
 
-      $oembed_instagram_data = json_decode(file_get_contents('https://api.instagram.com/v1/media/shortcode/'.$instagram_shortcode['shortcode'].'?client_id=153440ef1b5340e8bb347fbcfdfe9427'), true);
+      $oembed_instagram_data = json_decode(file_get_contents('https://api.instagram.com/v1/media/shortcode/'.$instagram_shortcode['shortcode'].'?client_id='.$instagram_clientid), true);
 
       $oembed_instagram_mp4 = $oembed_instagram_data['data']['videos']['standard_resolution']['url'];
 

@@ -35,6 +35,8 @@ $twitter_account = "";
 /* Pocket API Key */
 $pocket_consumer_key = "";
 
+/* Instagram API Client ID */
+$instagram_clientid = "";
 
 /* MySQL Variables */
 $host     = "localhost";
