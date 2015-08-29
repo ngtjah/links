@@ -234,6 +234,7 @@ function db_display($id) {
 
     $infotxt = "";
     $GifAutoPlay       = ($myGifAutoPlay == "on") ? "" : " freezeframe ";
+    $CrossDomain       = ($myGifAutoPlay == "on") ? "" : " crossorigin=\"anonymous\" ";
 
     $postDateTime = strtotime($dates[$id]);
     $lastDateTime = strtotime($lastdate);
@@ -564,7 +565,7 @@ function db_display($id) {
 
         echo "data-description=\"" . htmlentities($lightboxinfotxt) . "\" data-gallery>\n";
 
-        echo "<img src=\"$filepath_thumb\" class=\"image-ngt $GifAutoPlay\"></a>";
+        echo "<img src=\"$filepath_thumb\" class=\"image-ngt\"></a>";
 
         echo "\n";
 
@@ -595,7 +596,7 @@ function db_display($id) {
         
         } else {
         
-            echo "<img src=\"$filepath_thumb\" class=\"image-ngt $GifAutoPlay\"></a>";
+            echo "<img src=\"$filepath_thumb\" class=\"image-ngt $GifAutoPlay\" $CrossDomain></a>";
         
         }
 
